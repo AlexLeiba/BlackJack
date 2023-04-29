@@ -7,7 +7,6 @@ import {
   Button,
   SpaceBetweenGame,
   SpaceBetweenButtons,
-  Text,
 } from "./BlackJack.style";
 import { cards } from "../assets/images";
 
@@ -27,6 +26,7 @@ export function BlackJack() {
     dealerWallet: 1000,
     playerWallet: 1000,
     betQuantity: 100,
+    bet: 0,
   });
 
   let playerSum = 0;
@@ -37,21 +37,9 @@ export function BlackJack() {
   let newCard;
   let deck = [];
 
-  console.log("dealer sum", gameState.dealerSum);
-  console.log("player sum", gameState.playerSum);
-
   // TO DO all variables states in useState
 
   function buildDeck() {
-    const dealerWallet = localStorage.getItem("dealerWallet");
-    const playerWallet = localStorage.getItem("playerWallet");
-
-    if (dealerWallet < 1) {
-      localStorage.clear();
-    }
-    if (playerWallet < 1) {
-      localStorage.clear();
-    }
     let cardValues = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
     let cardTypes = ["C", "D", "H", "S"];
 
@@ -97,11 +85,13 @@ export function BlackJack() {
     const dealerWallet = localStorage.getItem("dealerWallet");
     const playerWallet = localStorage.getItem("playerWallet");
 
-    if (!dealerWallet) {
+    if (!dealerWallet || dealerWallet < 1) {
       localStorage.setItem("dealerWallet", 1000);
+      localStorage.setItem("playerWallet", 1000);
     }
 
-    if (!playerWallet) {
+    if (!playerWallet || playerWallet < 1) {
+      localStorage.setItem("dealerWallet", 1000);
       localStorage.setItem("playerWallet", 1000);
     }
 
@@ -143,6 +133,9 @@ export function BlackJack() {
       dealerWallet,
       playerWallet,
       betQuantity: 100,
+      playerWon: false,
+      dealerWon: false,
+      bet: 0,
     }));
   }
 
@@ -280,34 +273,56 @@ export function BlackJack() {
 
   function handleApplyBet() {
     //  const dealerWallet = localStorage.getItem("dealerWallet");
-    const playerWallet = localStorage.getItem("playerWallet");
 
-    const newWalletValue = playerWallet - gameState.betQuantity;
-
-    localStorage.setItem("playerWallet", newWalletValue);
+    setGameState((prevValue) => ({
+      ...prevValue,
+      bet: gameState.betQuantity,
+    }));
   }
 
-  //   useEffect(() => {
-  //     if (gameState.dealerSum === 21 || gameState.dealerWon) {
-  //       alert("dealer won");
-  //     }
-  //     if (gameState.dealerWon) {
-  //       alert("dealer");
-  //     }
-  //
-  //     if (gameState.playerSum === 21 || gameState.playerWon) {
-  //       alert("player won");
-  //     }
-  //
-  //     if (gameState.playerWon) {
-  //       alert("player");
-  //     }
-  //   }, [
-  //     gameState.dealerSum,
-  //     gameState.playerSum,
-  //     gameState.dealerWon,
-  //     gameState.playerWon,
-  //   ]);
+  useEffect(() => {
+    if (
+      gameState.dealerSum === 21 ||
+      gameState.dealerWon ||
+      gameState.playerSum > 21
+    ) {
+      console.log("dealer won");
+      const playerWallet = localStorage.getItem("playerWallet");
+      const dealerWallet = localStorage.getItem("dealerWallet");
+
+      console.log("=>>>>>>>>>>>>>", gameState.bet);
+      const newWalletPlayerValue =
+        parseInt(playerWallet) - Number(gameState.bet);
+      const newWalletDealerValue =
+        parseInt(dealerWallet) + Number(gameState.bet);
+
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
+    }
+
+    if (
+      gameState.playerSum === 21 ||
+      gameState.playerWon ||
+      gameState.dealerSum > 21
+    ) {
+      console.log("=>>>>>>>>>>>>>", gameState.bet);
+      const playerWallet = localStorage.getItem("playerWallet");
+      const dealerWallet = localStorage.getItem("dealerWallet");
+
+      const newWalletPlayerValue =
+        parseInt(playerWallet) + Number(gameState.bet);
+      const newWalletDealerValue =
+        parseInt(dealerWallet) - Number(gameState.bet);
+
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
+    }
+  }, [
+    gameState.dealerSum,
+    gameState.playerSum,
+    gameState.dealerWon,
+    gameState.playerWon,
+  ]);
 
   function newGame() {
     setGameState({
@@ -324,8 +339,6 @@ export function BlackJack() {
     startGame();
   }
 
-  console.log("stay", gameState.canStay);
-
   return (
     <Container>
       <SpaceBetweenGame>
@@ -341,7 +354,8 @@ export function BlackJack() {
             return <IMG src={cards[data]} alt="card" key={index} />;
           })}
         </DealerWrapper>
-        <div style={{ position: "absolute", marginTop: 60 }}>
+        <div style={{ position: "absolute", marginTop: 0, left: 500 }}>
+          <h1>Bet:{gameState.bet}$</h1>
           <input
             style={{ width: 80 }}
             type="number"
@@ -354,11 +368,11 @@ export function BlackJack() {
               }))
             }
           />
+
           <button title="apply" onClick={handleApplyBet}>
             Apply
           </button>
         </div>
-        <h1 style={{ position: "absolute" }}>Bet:{gameState.betQuantity}</h1>
 
         <PlayerWrapper>
           <div>
