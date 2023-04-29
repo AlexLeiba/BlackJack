@@ -17,7 +17,7 @@ export const DealerWrapper = styled.div`
 export const PlayerWrapper = styled.div`
   width: 100%;
   height: 60%;
-  background-color: #11e2e2;
+  background-color: #0d8949;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
