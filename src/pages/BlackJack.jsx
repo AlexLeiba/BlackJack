@@ -224,6 +224,34 @@ export function BlackJack() {
   }
 
   function checkDealerValue() {
+    if (cardDealerImages.length === 2) {
+      if (
+        gameState.dealerSum > 17 &&
+        gameState.dealerSum < 21 &&
+        gameState.dealerSum < gameState.playerSum
+      ) {
+        setGameState((prevState) => ({
+          ...prevState,
+          playerWon: true,
+          dealerWon: false,
+          canHit: false,
+          canStay: false,
+        }));
+      }
+      if (
+        gameState.dealerSum > 17 &&
+        gameState.dealerSum < 21 &&
+        gameState.dealerSum > gameState.playerSum
+      ) {
+        setGameState((prevState) => ({
+          ...prevState,
+          dealerWon: true,
+          playerWon: false,
+          canHit: false,
+          canStay: false,
+        }));
+      }
+    }
     if (cardDealerImages.length === 3) {
       if (
         gameState.playerSum <= 21 &&
