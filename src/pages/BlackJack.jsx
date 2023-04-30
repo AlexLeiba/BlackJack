@@ -290,7 +290,6 @@ export function BlackJack() {
       const playerWallet = localStorage.getItem("playerWallet");
       const dealerWallet = localStorage.getItem("dealerWallet");
 
-      console.log("=>>>>>>>>>>>>>", gameState.bet);
       const newWalletPlayerValue =
         parseInt(playerWallet) - Number(gameState.bet);
       const newWalletDealerValue =
@@ -354,7 +353,7 @@ export function BlackJack() {
             return <IMG src={cards[data]} alt="card" key={index} />;
           })}
         </DealerWrapper>
-        <div style={{ position: "absolute", marginTop: 0, left: 500 }}>
+        <div style={{ position: "absolute", marginTop: -25, left: 550 }}>
           <h1>Bet:{gameState.bet}$</h1>
           <input
             style={{ width: 80 }}
