@@ -6,23 +6,32 @@ import {
   IMG,
   Button,
   SpaceBetweenGame,
-  SpaceBetweenButtons,
+  SpaceBetween,
+  GameWrapper,
+  Text,
+  BetWrapper,
+  Input,
+  CardsWrapper,
+  Spacer,
+  ImageWrapper,
 } from "./BlackJack.style";
 import { cards } from "../assets/images";
 
 export function BlackJack() {
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
   const [cardDealerImages, setCardDealerImages] = useState([]);
-  const [cardState, setCardState] = useState([]);
+  const [cardState] = useState([]);
   const [gameState, setGameState] = useState({
     dealerSum: 0,
     playerSum: 0,
     canHit: true,
-    dealerAceCount: 0,
-    playerAceCount: 0,
     canStay: true,
     dealerWon: false,
     playerWon: false,
+    isPlayer: false,
+    isDealer: false,
+    dealerAceCount: 0,
+    playerAceCount: 0,
     dealerWallet: 1000,
     playerWallet: 1000,
     betQuantity: 100,
@@ -37,14 +46,11 @@ export function BlackJack() {
   let newCard;
   let deck = [];
 
-  // TO DO all variables states in useState
-
   function buildDeck() {
     let cardValues = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
     let cardTypes = ["C", "D", "H", "S"];
 
     for (let indexTypes = 0; indexTypes < cardTypes.length; indexTypes++) {
-      //types
       for (let valueIndex = 0; valueIndex < cardValues.length; valueIndex++) {
         cardState.push(cardValues[valueIndex] + "-" + cardTypes[indexTypes]);
       }
@@ -53,7 +59,7 @@ export function BlackJack() {
 
   function mixCards() {
     for (let indexCards = 0; indexCards < cardState.length; indexCards++) {
-      let randomNumbers = Math.floor(Math.random() * cardState.length); // multiplying 1 * deck length which is 56
+      let randomNumbers = Math.floor(Math.random() * cardState.length);
 
       let initialDeck = cardState[indexCards];
 
@@ -68,15 +74,13 @@ export function BlackJack() {
     let value = data[0];
 
     if (isNaN(value)) {
-      //if data is not a number do that
-
       if (value === "A") {
-        return 11; //only A has 11 the rest 10
+        return 11;
       }
       return 10;
     }
 
-    return parseInt(value); //if the data is number return it integer
+    return parseInt(value);
   }
 
   let dealerSum = 0;
@@ -95,24 +99,11 @@ export function BlackJack() {
       localStorage.setItem("playerWallet", 1000);
     }
 
-    //dealer will take a card
     newCard = cardState.pop();
     dealerSum += getValue(newCard);
     dealerAceCount += checkAce(newCard);
     setCardDealerImages((prevValue) => [...prevValue, newCard]);
 
-    // dealer
-    //     while (dealerSum < 17) {
-    //       const card = cardState.pop();
-    //
-    //       dealerSum += getValue(card);
-    //
-    //       dealerAceCount += checkAce(card);
-    //
-    //
-    //     }
-
-    // player will take a card
     for (let index = 0; index < 1; index++) {
       const card = cardState.pop();
 
@@ -136,6 +127,8 @@ export function BlackJack() {
       playerWon: false,
       dealerWon: false,
       bet: 0,
+      isPlayer: false,
+      isDealer: false,
     }));
   }
 
@@ -169,9 +162,7 @@ export function BlackJack() {
     }
   }
 
-  //on stay dealer has to show his second card.
   function stay() {
-    //dealer will take a card
     newCard = cardState.pop();
 
     setCardDealerImages((prevValue) => [...prevValue, newCard]);
@@ -196,16 +187,6 @@ export function BlackJack() {
         canHit: false,
       }));
     }
-
-    // RULES::::::
-    //if hand is higher than 21 its called bust(i lost)and dealer gets my bet
-    //on start everyone besides the dealer places a bet , then a dealer face up a card to
-    //  each player/ one card to the dealer faces up
-    //The second card of dealer's is faced down.
-    // if you want another card chose HIT
-    //if i do not want other cards (STAY)
-    //After that dealer have to show his second card/ if in his hand
-    //  cards are lower than 16 he have to take another card.
   }
 
   useEffect(() => {
@@ -272,21 +253,19 @@ export function BlackJack() {
   }
 
   function handleApplyBet() {
-    //  const dealerWallet = localStorage.getItem("dealerWallet");
-
     setGameState((prevValue) => ({
       ...prevValue,
       bet: gameState.betQuantity,
     }));
   }
 
+  // WINNER CHECK
   useEffect(() => {
     if (
       gameState.dealerSum === 21 ||
       gameState.dealerWon ||
       gameState.playerSum > 21
     ) {
-      console.log("dealer won");
       const playerWallet = localStorage.getItem("playerWallet");
       const dealerWallet = localStorage.getItem("dealerWallet");
 
@@ -297,6 +276,11 @@ export function BlackJack() {
 
       localStorage.setItem("playerWallet", newWalletPlayerValue);
       localStorage.setItem("dealerWallet", newWalletDealerValue);
+
+      setGameState((prevValue) => ({
+        ...prevValue,
+        isDealer: true,
+      }));
     }
 
     if (
@@ -304,7 +288,6 @@ export function BlackJack() {
       gameState.playerWon ||
       gameState.dealerSum > 21
     ) {
-      console.log("=>>>>>>>>>>>>>", gameState.bet);
       const playerWallet = localStorage.getItem("playerWallet");
       const dealerWallet = localStorage.getItem("dealerWallet");
 
@@ -315,12 +298,18 @@ export function BlackJack() {
 
       localStorage.setItem("playerWallet", newWalletPlayerValue);
       localStorage.setItem("dealerWallet", newWalletDealerValue);
+
+      setGameState((prevValue) => ({
+        ...prevValue,
+        isPlayer: true,
+      }));
     }
   }, [
     gameState.dealerSum,
     gameState.playerSum,
     gameState.dealerWon,
     gameState.playerWon,
+    gameState.bet,
   ]);
 
   function newGame() {
@@ -330,6 +319,7 @@ export function BlackJack() {
       canHit: true,
       dealerAceCount: 0,
       playerAceCount: 0,
+      canStay: true,
     });
     setCardPlayerImages([]);
     setCardDealerImages([]);
@@ -340,66 +330,111 @@ export function BlackJack() {
 
   return (
     <Container>
-      <SpaceBetweenGame>
-        <DealerWrapper>
-          <h4 style={{ textAlign: "right" }}>
-            Wallet: {gameState.dealerWallet}$
-          </h4>{" "}
-          <h2>Dealer:</h2>
-          {gameState.dealerSum === 21 && <h3>Dealer Won!</h3>}{" "}
-          {gameState.dealerWon && <h3>Dealer Won!</h3>}
-          {cardDealerImages.length === 1 && <IMG src={cards.back} alt="card" />}
-          {cardDealerImages.map((data, index) => {
-            return <IMG src={cards[data]} alt="card" key={index} />;
-          })}
-        </DealerWrapper>
-        <div style={{ position: "absolute", marginTop: -25, left: 550 }}>
-          <h1>Bet:{gameState.bet}$</h1>
-          <input
-            style={{ width: 80 }}
-            type="number"
-            title="bet"
-            value={gameState.betQuantity}
-            onChange={(e) =>
-              setGameState((prevValue) => ({
-                ...prevValue,
-                betQuantity: e.target.value,
-              }))
-            }
-          />
+      <GameWrapper>
+        <SpaceBetweenGame>
+          <DealerWrapper>
+            <Text align={"right"} type="dealer">
+              Wallet: {gameState.dealerWallet}$
+            </Text>
 
-          <button title="apply" onClick={handleApplyBet}>
-            Apply
-          </button>
-        </div>
+            <Spacer margin={100} />
 
-        <PlayerWrapper>
-          <div>
-            <h4 style={{ textAlign: "right" }}>
-              Wallet: {gameState.playerWallet}$
-            </h4>{" "}
-            <h2>Player:</h2> {gameState.playerSum === 21 && <h3>You Won!</h3>}
-            {gameState.playerWon && <h3>You Won!</h3>}
-            {gameState.playerSum > 21 && <h3>You lost!</h3>}
-            {gameState.dealerSum > 21 && <h3>You Won!</h3>}
-            {cardPlayerImages.map((data, index) => {
+            <Text size={25}>Dealer:</Text>
+            <Spacer margin={30} />
+
+            {cardDealerImages.length === 1 && (
+              <IMG src={cards.back} alt="card" />
+            )}
+
+            {cardDealerImages.map((data, index) => {
               return <IMG src={cards[data]} alt="card" key={index} />;
             })}
-          </div>
 
-          <div>
-            <SpaceBetweenButtons>
-              {cardPlayerImages.length > 0 && (
+            {gameState.bet !== 0 && (
+              <ImageWrapper>
+                <IMG type="chips" src={cards.chips} alt="chips" />
+              </ImageWrapper>
+            )}
+          </DealerWrapper>
+
+          <PlayerWrapper>
+            <BetWrapper>
+              <div>
+                <Text size={18} align="left" type="player">
+                  Bet: {gameState.bet}$
+                </Text>
+                <Input
+                  style={{ width: 50 }}
+                  type="number"
+                  title="bet"
+                  value={gameState.betQuantity}
+                  onChange={(e) =>
+                    setGameState((prevValue) => ({
+                      ...prevValue,
+                      betQuantity: e.target.value,
+                    }))
+                  }
+                />
+
+                <Button
+                  xSize={60}
+                  ySize={32}
+                  title="apply"
+                  onClick={handleApplyBet}
+                  bgColor={!gameState.bet ? "red" : "#0ff67f"}
+                >
+                  {!gameState.bet ? "Apply" : "Applied"}
+                </Button>
+              </div>
+
+              <Text align="right" type="player">
+                Wallet: {gameState.playerWallet}$
+              </Text>
+            </BetWrapper>
+
+            <Text size={25} type="player">
+              Player:
+            </Text>
+
+            <CardsWrapper>
+              {gameState.isPlayer && (
                 <>
-                  {gameState.canHit && <Button onClick={hit}>Hit</Button>}
-                  {gameState.canStay && <Button onClick={stay}>Stay</Button>}
+                  <Text size={18} type="won">
+                    You Won!
+                  </Text>
+                  <Spacer />
                 </>
               )}
-              <Button onClick={newGame}>New game</Button>
-            </SpaceBetweenButtons>
-          </div>
-        </PlayerWrapper>
-      </SpaceBetweenGame>
+
+              {gameState.isDealer && (
+                <>
+                  <Text size={18} type={"lost"}>
+                    You lost!
+                  </Text>
+                  <Spacer />
+                </>
+              )}
+
+              {cardPlayerImages.map((data, index) => {
+                return <IMG src={cards[data]} alt="card" key={index} />;
+              })}
+            </CardsWrapper>
+            <Spacer />
+
+            <div>
+              <SpaceBetween>
+                {cardPlayerImages.length > 0 && (
+                  <>
+                    {gameState.canHit && <Button onClick={hit}>Hit</Button>}
+                    {gameState.canStay && <Button onClick={stay}>Stay</Button>}
+                  </>
+                )}
+                <Button onClick={newGame}>New game</Button>
+              </SpaceBetween>
+            </div>
+          </PlayerWrapper>
+        </SpaceBetweenGame>
+      </GameWrapper>
     </Container>
   );
 }

@@ -51,6 +51,7 @@ import dA from "./A-D.png";
 import hA from "./A-H.png";
 import sA from "./A-S.png";
 import back from "./BACK.png";
+import chips from "./chips.png";
 
 export const cards = {
   back,
@@ -106,4 +107,5 @@ export const cards = {
   "A-D": dA,
   "A-H": hA,
   "A-S": sA,
+  chips,
 };
