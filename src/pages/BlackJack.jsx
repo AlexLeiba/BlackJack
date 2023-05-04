@@ -30,6 +30,7 @@ export function BlackJack() {
     playerWon: false,
     isPlayer: false,
     isDealer: false,
+    isDraw: false,
     dealerAceCount: 0,
     playerAceCount: 0,
     dealerWallet: 1000,
@@ -129,6 +130,7 @@ export function BlackJack() {
       bet: 0,
       isPlayer: false,
       isDealer: false,
+      isDraw: false,
     }));
   }
 
@@ -194,15 +196,17 @@ export function BlackJack() {
   }, [cardDealerImages.length]);
 
   function reduceAce(playerSum, playerAceCount) {
+    let newPlayerSum = playerSum;
     if (playerSum > 21 && playerAceCount > 0) {
       setGameState((prev) => ({
         ...prev,
         playerAceCount: playerAceCount - 1,
         playerSum: playerSum - 10,
       }));
+      newPlayerSum = newPlayerSum - 10;
     }
 
-    return gameState.playerSum;
+    return newPlayerSum;
   }
 
   function reduceDealerAce(dealerSum, dealerAceCount) {
@@ -277,6 +281,14 @@ export function BlackJack() {
           canStay: false,
         }));
       }
+      if (gameState.playerSum === gameState.dealerSum) {
+        setGameState((prevValue) => ({
+          ...prevValue,
+          isDraw: true,
+          playerWon: false,
+          dealerWon: false,
+        }));
+      }
     }
   }
 
@@ -289,6 +301,7 @@ export function BlackJack() {
 
   // WINNER CHECK
   useEffect(() => {
+    console.log("gameState.dealerSum", gameState.dealerSum);
     if (
       gameState.dealerSum === 21 ||
       gameState.dealerWon ||
@@ -310,7 +323,7 @@ export function BlackJack() {
         isDealer: true,
       }));
     }
-
+    console.log("gameState.playerSum", gameState.playerSum);
     if (
       gameState.playerSum === 21 ||
       gameState.playerWon ||
@@ -338,6 +351,7 @@ export function BlackJack() {
     gameState.dealerWon,
     gameState.playerWon,
     gameState.bet,
+    cardDealerImages.length,
   ]);
 
   function newGame() {
@@ -429,6 +443,15 @@ export function BlackJack() {
                 <>
                   <Text size={18} type="won">
                     You Won!
+                  </Text>
+                  <Spacer />
+                </>
+              )}
+
+              {gameState.isDraw && (
+                <>
+                  <Text size={18} type="won">
+                    Draw!
                   </Text>
                   <Spacer />
                 </>
