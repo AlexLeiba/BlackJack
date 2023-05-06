@@ -50,7 +50,7 @@ export const Button = styled.button`
   margin: 0 0 10px 10px;
   border-radius: 10px;
   border: none;
-  color: black;
+  color: ${({ textColor }) => (textColor ? textColor : "black")};
   background-color: ${({ bgColor }) => bgColor && bgColor};
 
   &:hover {
@@ -60,6 +60,7 @@ export const Button = styled.button`
 `;
 
 export const Text = styled.h1`
+  width: 100%;
   font-size: ${({ size }) => (size ? `${size}px` : "13px")};
   text-align: ${({ align }) => (align ? align : "center")};
   margin: 10px 10px 0 0;
@@ -106,10 +107,6 @@ export const Input = styled.input`
 
 export const CardsWrapper = styled.div`
   margin-bottom: 20px;
-`;
-
-export const Spacer = styled.div`
-  margin-bottom: ${({ margin }) => (margin ? `${margin}px` : "10px")};
 `;
 
 export const ImageWrapper = styled.div`

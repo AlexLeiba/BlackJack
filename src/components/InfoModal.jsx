@@ -1,27 +1,44 @@
 import React from "react";
 import Modal from "react-modal";
+import { Button, IMG, Text } from "../pages/BlackJack.style";
+import { IconsWrapper, Input, InputWrapper } from "./Input.style";
+import { cards } from "../assets/images";
 
-export function InfoModal({ isVisible, handleCloseModal }) {
+export function InfoModal({
+  isVisible,
+  handleCreateNewGame,
+  handleGameState,
+  gameState,
+}) {
   const customStyles = {
     content: {
+      width: "400px",
+      height: "250px",
       top: "50%",
       left: "50%",
       right: "auto",
       bottom: "auto",
-      marginRight: "-50%",
       transform: "translate(-50%, -50%)",
+      overflow: "hidden",
     },
   };
 
-  //    function handleModalVisible() {
-  //      navigate("/");
-  //      setIsModalVisible(false);
-  //    }
-
-  //   const [isModalVisible, setIsModalVisible] = useState(false);
   return (
     <Modal isOpen={isVisible} style={customStyles}>
-      <h3>Expense added Successfully</h3>
+      <IconsWrapper>
+        <IMG
+          style={{ height: "20px", cursor: "pointer" }}
+          src={cards.close}
+          onClick={() =>
+            handleGameState((prevState) => ({
+              ...prevState,
+              isModalVisible: false,
+            }))
+          }
+        />
+      </IconsWrapper>
+
+      <Text size={20}>Before to start please introduce your name!</Text>
       <div
         style={{
           display: "flex",
@@ -37,27 +54,30 @@ export function InfoModal({ isVisible, handleCloseModal }) {
             flexDirection: "column",
           }}
         >
-          <img
-            src={require("../../assets/images/success.png")}
-            style={{ width: "60px", height: "60px" }}
-            alt="success"
-          />
-          <div
-            style={{
-              width: "50px",
-              height: "20px",
-              cursor: "pointer",
-              border: "1px solid green",
-              borderRadius: "4px",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "10px",
-            }}
-            onClick={() => handleCloseModal()}
+          <InputWrapper>
+            <Text align="left">Name</Text>
+            <Input
+              type="string"
+              title="Name"
+              value={gameState.userName}
+              onChange={(e) =>
+                handleGameState((prevValue) => ({
+                  ...prevValue,
+                  userName: e.target.value,
+                }))
+              }
+            />
+          </InputWrapper>
+
+          <Button
+            disabled={gameState.userName.length < 1}
+            textColor="white"
+            onClick={handleCreateNewGame}
+            bgColor={gameState.userName.length > 0 ? "red" : "gray"}
+            xSize={100}
           >
-            <h4>Home</h4>
-          </div>
+            New game
+          </Button>
         </div>
       </div>
     </Modal>

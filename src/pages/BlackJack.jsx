@@ -12,10 +12,11 @@ import {
   BetWrapper,
   Input,
   CardsWrapper,
-  Spacer,
   ImageWrapper,
 } from "./BlackJack.style";
 import { cards } from "../assets/images";
+import { InfoModal } from "../components/InfoModal";
+import { Spacer } from "../components/Spacer";
 
 export function BlackJack() {
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
@@ -37,6 +38,10 @@ export function BlackJack() {
     playerWallet: 0,
     betQuantity: 100,
     bet: 0,
+    userName: "",
+    isModalVisible: false,
+    playerLostMoney: false,
+    dealerLostMoney: false,
   });
 
   let playerSum = 0;
@@ -89,6 +94,7 @@ export function BlackJack() {
   function startGame() {
     const dealerWallet = localStorage.getItem("dealerWallet");
     const playerWallet = localStorage.getItem("playerWallet");
+    const playerName = localStorage.getItem("playerName");
 
     newCard = cardState.pop();
     dealerSum += getValue(newCard);
@@ -121,6 +127,10 @@ export function BlackJack() {
       isPlayer: false,
       isDealer: false,
       isDraw: false,
+      userName: playerName,
+      isModalVisible: false,
+      playerLostMoney: false,
+      dealerLostMoney: false,
     }));
   }
 
@@ -295,14 +305,13 @@ export function BlackJack() {
   // WINNER CHECK
   useEffect(() => {
     console.log("gameState.dealerSum", gameState.dealerSum);
+    const playerWallet = localStorage.getItem("playerWallet");
+    const dealerWallet = localStorage.getItem("dealerWallet");
     if (
       gameState.dealerSum === 21 ||
       gameState.dealerWon ||
       gameState.playerSum > 21
     ) {
-      const playerWallet = localStorage.getItem("playerWallet");
-      const dealerWallet = localStorage.getItem("dealerWallet");
-
       const newWalletPlayerValue =
         parseInt(playerWallet) - Number(gameState.bet);
       const newWalletDealerValue =
@@ -313,6 +322,8 @@ export function BlackJack() {
 
       setGameState((prevValue) => ({
         ...prevValue,
+        playerWallet: newWalletPlayerValue,
+        dealerWallet: newWalletDealerValue,
         isDealer: true,
       }));
     }
@@ -322,9 +333,6 @@ export function BlackJack() {
       gameState.playerWon ||
       gameState.dealerSum > 21
     ) {
-      const playerWallet = localStorage.getItem("playerWallet");
-      const dealerWallet = localStorage.getItem("dealerWallet");
-
       const newWalletPlayerValue =
         parseInt(playerWallet) + Number(gameState.bet);
       const newWalletDealerValue =
@@ -335,6 +343,8 @@ export function BlackJack() {
 
       setGameState((prevValue) => ({
         ...prevValue,
+        playerWallet: newWalletPlayerValue,
+        dealerWallet: newWalletDealerValue,
         isPlayer: true,
       }));
     }
@@ -350,6 +360,7 @@ export function BlackJack() {
   function newGame() {
     localStorage.setItem("dealerWallet", 1000);
     localStorage.setItem("playerWallet", 1000);
+    localStorage.setItem("playerName", gameState.userName);
     setGameState({
       dealerSum: 0,
       playerSum: 0,
@@ -363,6 +374,10 @@ export function BlackJack() {
     buildDeck();
     mixCards();
     startGame();
+    setGameState((prevState) => ({
+      ...prevState,
+      isModalVisible: false,
+    }));
   }
 
   function nextGame() {
@@ -381,6 +396,13 @@ export function BlackJack() {
     startGame();
   }
 
+  function createNewGame() {
+    setGameState((prevState) => ({
+      ...prevState,
+      isModalVisible: true,
+    }));
+  }
+
   function isUserStartedGame() {
     const userChips = localStorage.getItem("playerWallet");
     const dealerChips = localStorage.getItem("dealerWallet");
@@ -397,12 +419,30 @@ export function BlackJack() {
     }
   }
 
+  function getUserName() {
+    const userName = localStorage.getItem("playerName");
+
+    return userName;
+  }
+
   useEffect(() => {
     isUserStartedGame();
   }, []);
 
   return (
     <Container>
+      <InfoModal
+        isVisible={gameState.isModalVisible}
+        handleCloseModal={() =>
+          setGameState((prevState) => ({
+            ...prevState,
+            isModalVisible: false,
+          }))
+        }
+        handleCreateNewGame={newGame}
+        handleGameState={setGameState}
+        gameState={gameState}
+      />
       <GameWrapper>
         <SpaceBetweenGame>
           <DealerWrapper>
@@ -412,8 +452,12 @@ export function BlackJack() {
 
             <Spacer margin={100} />
 
-            <Text size={25}>Dealer:</Text>
-            <Spacer margin={30} />
+            {cardDealerImages.length > 0 && (
+              <>
+                <Text size={25}>Dealer</Text>
+                <Spacer margin={30} />
+              </>
+            )}
 
             {cardDealerImages.length === 1 && (
               <IMG src={cards.back} alt="card" />
@@ -465,15 +509,23 @@ export function BlackJack() {
               </Text>
             </BetWrapper>
 
-            <Text size={25} type="player">
-              Player:
-            </Text>
+            {cardPlayerImages.length > 0 ? (
+              <Text size={25} type="player">
+                {getUserName()}
+              </Text>
+            ) : (
+              <Text size={25} type="player">
+                Welcome to Blackjack
+              </Text>
+            )}
 
             <CardsWrapper>
               {gameState.isPlayer && (
                 <>
                   <Text size={18} type="won">
-                    You Won!
+                    {gameState.dealerWallet < 1
+                      ? "You Won all dealer's money Congrats!!"
+                      : "You Won!"}
                   </Text>
                   <Spacer />
                 </>
@@ -491,7 +543,9 @@ export function BlackJack() {
               {gameState.isDealer && (
                 <>
                   <Text size={18} type={"lost"}>
-                    You lost!
+                    {gameState.playerWallet < 1
+                      ? "You lost all your money!"
+                      : "You lost!"}
                   </Text>
                   <Spacer />
                 </>
@@ -517,7 +571,12 @@ export function BlackJack() {
                     {cardPlayerImages.length < 1 ? "Continue" : "Next game"}
                   </Button>
                 )}
-                <Button onClick={newGame} bgColor="#bb0e0e" xSize={70}>
+                <Button
+                  textColor="white"
+                  onClick={createNewGame}
+                  bgColor="#bb0e0e"
+                  xSize={70}
+                >
                   New game
                 </Button>
               </SpaceBetween>
