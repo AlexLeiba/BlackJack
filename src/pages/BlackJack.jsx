@@ -49,7 +49,8 @@ export function BlackJack() {
   let dealerAceCount = 0;
   let playerAceCount = 0;
 
-  let newCard;
+  let dealerCard;
+  let playerCard;
   let deck = [];
 
   function buildDeck() {
@@ -96,18 +97,22 @@ export function BlackJack() {
     const playerWallet = localStorage.getItem("playerWallet");
     const playerName = localStorage.getItem("playerName");
 
-    newCard = cardState.pop();
-    dealerSum += getValue(newCard);
-    dealerAceCount += checkAce(newCard);
-    setCardDealerImages((prevValue) => [...prevValue, newCard]);
+    //FIRST DEALER CARD
+    dealerCard = cardState.pop();
+    dealerSum += getValue(dealerCard);
+    dealerAceCount += checkAce(dealerCard);
+    setCardDealerImages((prevValue) => [...prevValue, dealerCard]);
 
+    //FIRST PLAYER CARD
     for (let index = 0; index < 1; index++) {
-      const card = cardState.pop();
+      const filteredCardState = cardState.filter((card) => card !== dealerCard);
 
-      playerSum += getValue(card);
-      playerAceCount += checkAce(card);
-      deck.push(card);
-      setCardPlayerImages((prev) => [...prev, card]);
+      playerCard = filteredCardState.pop();
+
+      playerSum += getValue(playerCard);
+      playerAceCount += checkAce(playerCard);
+      deck.push(playerCard);
+      setCardPlayerImages((prev) => [...prev, playerCard]);
     }
 
     setGameState((prev) => ({
@@ -139,13 +144,13 @@ export function BlackJack() {
       return;
     }
 
-    const card = cardState.pop();
+    const playerCard = cardState.pop();
 
     // here to filter dealer array with this card.
-    setCardPlayerImages((prev) => [...prev, card]);
+    setCardPlayerImages((prev) => [...prev, playerCard]);
 
-    playerSum += getValue(card);
-    playerAceCount += checkAce(card);
+    playerSum += getValue(playerCard);
+    playerAceCount += checkAce(playerCard);
 
     const newSumPlayer = (gameState.playerSum += playerSum);
     const newPlayerAceCount = (gameState.playerAceCount += playerAceCount);
@@ -166,14 +171,17 @@ export function BlackJack() {
   }
 
   function stay() {
-    newCard = cardState.pop();
+    dealerCard = cardState.pop();
 
     // here to filter player array with this newCard.
 
-    setCardDealerImages((prevValue) => [...prevValue, newCard]);
+    console.log("carddd", dealerCard);
+    console.log("cardstate", cardState);
 
-    dealerSum += getValue(newCard);
-    dealerAceCount += checkAce(newCard);
+    setCardDealerImages((prevValue) => [...prevValue, dealerCard]);
+
+    dealerSum += getValue(dealerCard);
+    dealerAceCount += checkAce(dealerCard);
 
     const newSumDealer = (gameState.dealerSum += dealerSum);
     const newDealerAceCount = (gameState.dealerAceCount += dealerAceCount);
