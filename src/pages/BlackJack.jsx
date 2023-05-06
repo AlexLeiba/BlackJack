@@ -40,8 +40,6 @@ export function BlackJack() {
     bet: 0,
     userName: "",
     isModalVisible: false,
-    playerLostMoney: false,
-    dealerLostMoney: false,
   });
 
   let playerSum = 0;
@@ -134,8 +132,6 @@ export function BlackJack() {
       isDraw: false,
       userName: playerName,
       isModalVisible: false,
-      playerLostMoney: false,
-      dealerLostMoney: false,
     }));
   }
 
@@ -145,6 +141,8 @@ export function BlackJack() {
     }
 
     const playerCard = cardState.pop();
+
+    //to filtrate each time removed element from an global array
 
     // here to filter dealer array with this card.
     setCardPlayerImages((prev) => [...prev, playerCard]);
@@ -172,6 +170,7 @@ export function BlackJack() {
 
   function stay() {
     dealerCard = cardState.pop();
+    //to filtrate each time removed element from an global array and then to get next card from filtered array
 
     // here to filter player array with this newCard.
 
@@ -312,7 +311,6 @@ export function BlackJack() {
 
   // WINNER CHECK
   useEffect(() => {
-    console.log("gameState.dealerSum", gameState.dealerSum);
     const playerWallet = localStorage.getItem("playerWallet");
     const dealerWallet = localStorage.getItem("dealerWallet");
     if (
@@ -335,7 +333,7 @@ export function BlackJack() {
         isDealer: true,
       }));
     }
-    console.log("gameState.playerSum", gameState.playerSum);
+
     if (
       gameState.playerSum === 21 ||
       gameState.playerWon ||
