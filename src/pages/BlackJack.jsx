@@ -33,8 +33,8 @@ export function BlackJack() {
     isDraw: false,
     dealerAceCount: 0,
     playerAceCount: 0,
-    dealerWallet: 1000,
-    playerWallet: 1000,
+    dealerWallet: 0,
+    playerWallet: 0,
     betQuantity: 100,
     bet: 0,
   });
@@ -90,16 +90,6 @@ export function BlackJack() {
     const dealerWallet = localStorage.getItem("dealerWallet");
     const playerWallet = localStorage.getItem("playerWallet");
 
-    if (!dealerWallet || dealerWallet < 1) {
-      localStorage.setItem("dealerWallet", 1000);
-      localStorage.setItem("playerWallet", 1000);
-    }
-
-    if (!playerWallet || playerWallet < 1) {
-      localStorage.setItem("dealerWallet", 1000);
-      localStorage.setItem("playerWallet", 1000);
-    }
-
     newCard = cardState.pop();
     dealerSum += getValue(newCard);
     dealerAceCount += checkAce(newCard);
@@ -141,6 +131,7 @@ export function BlackJack() {
 
     const card = cardState.pop();
 
+    // here to filter dealer array with this card.
     setCardPlayerImages((prev) => [...prev, card]);
 
     playerSum += getValue(card);
@@ -166,6 +157,8 @@ export function BlackJack() {
 
   function stay() {
     newCard = cardState.pop();
+
+    // here to filter player array with this newCard.
 
     setCardDealerImages((prevValue) => [...prevValue, newCard]);
 
@@ -355,6 +348,8 @@ export function BlackJack() {
   ]);
 
   function newGame() {
+    localStorage.setItem("dealerWallet", 1000);
+    localStorage.setItem("playerWallet", 1000);
     setGameState({
       dealerSum: 0,
       playerSum: 0,
@@ -369,6 +364,42 @@ export function BlackJack() {
     mixCards();
     startGame();
   }
+
+  function nextGame() {
+    setGameState({
+      dealerSum: 0,
+      playerSum: 0,
+      canHit: true,
+      dealerAceCount: 0,
+      playerAceCount: 0,
+      canStay: true,
+    });
+    setCardPlayerImages([]);
+    setCardDealerImages([]);
+    buildDeck();
+    mixCards();
+    startGame();
+  }
+
+  function isUserStartedGame() {
+    const userChips = localStorage.getItem("playerWallet");
+    const dealerChips = localStorage.getItem("dealerWallet");
+
+    if (
+      !userChips ||
+      userChips === "0" ||
+      !dealerChips ||
+      dealerChips === "0"
+    ) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  useEffect(() => {
+    isUserStartedGame();
+  }, []);
 
   return (
     <Container>
@@ -480,7 +511,15 @@ export function BlackJack() {
                     {gameState.canStay && <Button onClick={stay}>Stay</Button>}
                   </>
                 )}
-                <Button onClick={newGame}>New game</Button>
+
+                {isUserStartedGame() && (
+                  <Button onClick={nextGame}>
+                    {cardPlayerImages.length < 1 ? "Continue" : "Next game"}
+                  </Button>
+                )}
+                <Button onClick={newGame} bgColor="#bb0e0e" xSize={70}>
+                  New game
+                </Button>
               </SpaceBetween>
             </div>
           </PlayerWrapper>
