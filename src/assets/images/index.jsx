@@ -53,8 +53,12 @@ import sA from "./A-S.png";
 import back from "./BACK.png";
 import chips from "./chips.png";
 import close from "./close.png";
+import backgroundImage from "./background-image.png";
+import table from "./table.png";
 
 export const cards = {
+  table,
+  backgroundImage,
   close,
   back,
   "2-C": c2,

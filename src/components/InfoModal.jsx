@@ -3,6 +3,7 @@ import Modal from "react-modal";
 import { Button, IMG, Text } from "../pages/BlackJack.style";
 import { IconsWrapper, Input, InputWrapper } from "./Input.style";
 import { cards } from "../assets/images";
+import { colors } from "../colors/colors";
 
 export function InfoModal({
   isVisible,
@@ -20,6 +21,7 @@ export function InfoModal({
       bottom: "auto",
       transform: "translate(-50%, -50%)",
       overflow: "hidden",
+      borderRadius: "30px",
     },
   };
 
@@ -38,7 +40,9 @@ export function InfoModal({
         />
       </IconsWrapper>
 
-      <Text size={20}>Before to start please introduce your name!</Text>
+      <Text type={"modal"} size={20}>
+        Before to start please introduce your name!
+      </Text>
       <div
         style={{
           display: "flex",
@@ -55,7 +59,9 @@ export function InfoModal({
           }}
         >
           <InputWrapper>
-            <Text align="left">Name</Text>
+            <Text type={"modal"} align="left">
+              Name
+            </Text>
             <Input
               type="string"
               title="Name"
@@ -71,10 +77,11 @@ export function InfoModal({
 
           <Button
             disabled={gameState.userName.length < 1}
-            textColor="white"
+            textColor={colors.white}
             onClick={handleCreateNewGame}
-            bgColor={gameState.userName.length > 0 ? "red" : "gray"}
-            xSize={100}
+            bgColor={
+              gameState.userName.length > 0 ? `${colors.red}` : `${colors.gray}`
+            }
           >
             New game
           </Button>

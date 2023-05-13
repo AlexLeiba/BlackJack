@@ -7,16 +7,18 @@ import {
   Button,
   SpaceBetweenGame,
   SpaceBetween,
-  GameWrapper,
+  TableWrapper,
   Text,
   BetWrapper,
   Input,
   CardsWrapper,
   ImageWrapper,
+  BetContainer,
 } from "./BlackJack.style";
 import { cards } from "../assets/images";
 import { InfoModal } from "../components/InfoModal";
 import { Spacer } from "../components/Spacer";
+import { colors } from "../colors/colors";
 
 export function BlackJack() {
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
@@ -105,7 +107,7 @@ export function BlackJack() {
     for (let index = 0; index < 1; index++) {
       const filteredCardState = cardState.filter((card) => card !== dealerCard);
 
-      playerCard = filteredCardState.pop();
+      playerCard = cardState.pop();
 
       playerSum += getValue(playerCard);
       playerAceCount += checkAce(playerCard);
@@ -449,18 +451,12 @@ export function BlackJack() {
         handleGameState={setGameState}
         gameState={gameState}
       />
-      <GameWrapper>
+      <TableWrapper>
         <SpaceBetweenGame>
           <DealerWrapper>
-            <Text align={"right"} type="dealer">
-              Wallet: {gameState.dealerWallet}$
-            </Text>
-
-            <Spacer margin={100} />
-
             {cardDealerImages.length > 0 && (
               <>
-                <Text size={25}>Dealer</Text>
+                <Text size={32}>Dealer</Text>
                 <Spacer margin={30} />
               </>
             )}
@@ -472,49 +468,53 @@ export function BlackJack() {
             {cardDealerImages.map((data, index) => {
               return <IMG src={cards[data]} alt="card" key={index} />;
             })}
-
-            {gameState.bet !== 0 && (
-              <ImageWrapper>
-                <IMG type="chips" src={cards.chips} alt="chips" />
-              </ImageWrapper>
-            )}
           </DealerWrapper>
 
-          <PlayerWrapper>
-            <BetWrapper>
-              <div>
-                <Text size={18} align="left" type="player">
-                  Bet: {gameState.bet}$
-                </Text>
-                <Input
-                  style={{ width: 50 }}
-                  type="number"
-                  title="bet"
-                  value={gameState.betQuantity}
-                  onChange={(e) =>
-                    setGameState((prevValue) => ({
-                      ...prevValue,
-                      betQuantity: e.target.value,
-                    }))
-                  }
-                />
+          <BetContainer>
+            <Input
+              type="number"
+              title="bet"
+              value={gameState.betQuantity}
+              onChange={(e) =>
+                setGameState((prevValue) => ({
+                  ...prevValue,
+                  betQuantity: e.target.value,
+                }))
+              }
+            />
 
-                <Button
-                  xSize={60}
-                  ySize={32}
-                  title="apply"
-                  onClick={handleApplyBet}
-                  bgColor={!gameState.bet ? "red" : "#0ff67f"}
-                >
-                  {!gameState.bet ? "Apply" : "Applied"}
-                </Button>
-              </div>
+            <Button
+              isBet
+              xSize={100}
+              ySize={42}
+              title="apply"
+              onClick={handleApplyBet}
+              bgColor={colors.white}
+              textColor={!gameState.bet ? colors.red : colors.green}
+            >
+              {!gameState.bet ? "Apply" : "Applied"}
+            </Button>
 
-              <Text align="right" type="player">
-                Wallet: {gameState.playerWallet}$
+            <div>
+              {gameState.bet !== 0 && (
+                <ImageWrapper>
+                  <IMG type="chips" src={cards.chips} alt="chips" />
+                </ImageWrapper>
+              )}
+              <Text size={18} align="left" type="player">
+                Bet: {gameState.bet}$
               </Text>
-            </BetWrapper>
+            </div>
 
+            <Text align={"right"} type="dealer">
+              Wallet: {gameState.dealerWallet}$
+            </Text>
+            <Text align="right" type="player">
+              Wallet: {gameState.playerWallet}$
+            </Text>
+          </BetContainer>
+
+          <PlayerWrapper>
             {cardPlayerImages.length > 0 ? (
               <Text size={25} type="player">
                 {getUserName()}
@@ -524,6 +524,7 @@ export function BlackJack() {
                 Welcome to Blackjack
               </Text>
             )}
+            <Spacer margin={32} />
 
             <CardsWrapper>
               {gameState.isPlayer && (
@@ -561,35 +562,49 @@ export function BlackJack() {
                 return <IMG src={cards[data]} alt="card" key={index} />;
               })}
             </CardsWrapper>
-            <Spacer />
+            <Spacer margin={76} />
 
-            <div>
-              <SpaceBetween>
-                {cardPlayerImages.length > 0 && (
-                  <>
-                    {gameState.canHit && <Button onClick={hit}>Hit</Button>}
-                    {gameState.canStay && <Button onClick={stay}>Stay</Button>}
-                  </>
-                )}
+            <SpaceBetween>
+              {cardPlayerImages.length > 0 && (
+                <>
+                  {gameState.canHit && (
+                    <Button textColor={colors.green} marginL={16} onClick={hit}>
+                      Hit
+                    </Button>
+                  )}
+                  {gameState.canStay && (
+                    <Button
+                      textColor={colors.green}
+                      marginL={16}
+                      onClick={stay}
+                    >
+                      Stay
+                    </Button>
+                  )}
+                </>
+              )}
 
-                {isUserStartedGame() && (
-                  <Button onClick={nextGame}>
-                    {cardPlayerImages.length < 1 ? "Continue" : "Next game"}
-                  </Button>
-                )}
+              {isUserStartedGame() && (
                 <Button
-                  textColor="white"
-                  onClick={createNewGame}
-                  bgColor="#bb0e0e"
-                  xSize={70}
+                  marginL={16}
+                  onClick={nextGame}
+                  textColor={colors.green}
                 >
-                  New game
+                  {cardPlayerImages.length < 1 ? "Continue" : "Next game"}
                 </Button>
-              </SpaceBetween>
-            </div>
+              )}
+              <Button
+                marginL={32}
+                textColor={colors.white}
+                onClick={createNewGame}
+                bgColor={colors.red}
+              >
+                New game
+              </Button>
+            </SpaceBetween>
           </PlayerWrapper>
         </SpaceBetweenGame>
-      </GameWrapper>
+      </TableWrapper>
     </Container>
   );
 }
