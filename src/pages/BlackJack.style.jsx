@@ -22,8 +22,9 @@ export const TableWrapper = styled.div`
   padding: 0 26px 0 26px;
 
   /* offset-x | offset-y | blur-radius | color */
-  box-shadow: 0 0px 15px black;
+  box-shadow: 0 10px 35px black;
   border-radius: 50px;
+  position: relative;
 `;
 
 export const DealerWrapper = styled.div`
@@ -52,15 +53,13 @@ export const SpaceBetween = styled.div`
 `;
 
 export const IMG = styled.img`
-  height: ${({ type }) => (type === "chips" ? "40px" : "150px")};
+  height: ${({ type }) => (type === "chips" ? "68px" : "150px")};
   margin: 2px;
 `;
 
 export const BetContainer = styled.span`
-  display: flex;
-  justify-content: space-between;
   position: absolute;
-  top: 50%;
+  top: calc(50% - 35px);
 `;
 
 export const Button = styled.button`
@@ -68,10 +67,11 @@ export const Button = styled.button`
   height: ${({ ySize }) => (ySize ? `${ySize}px` : "40px")};
   margin-left: ${({ marginL }) => (marginL ? `${marginL}px` : 0)};
   border-radius: ${({ isBet }) => (isBet ? "0px" : "10px")};
-  border: ${({ isBet }) => (isBet ? "2px #ffffff solid" : "none")};
+  border: ${({ isBet }) => (isBet ? "3px #ffffff solid" : "none")};
   color: ${({ textColor }) => (textColor ? textColor : "black")};
   background-color: ${({ bgColor }) => bgColor && bgColor};
   font-size: 17px;
+  cursor: pointer;
 
   ${({ isBet }) => {
     switch (isBet) {
@@ -88,7 +88,8 @@ export const Button = styled.button`
   }}
 
   &:hover {
-    color: #000000;
+    color: ${({ disabled }) => !disabled && "#000000"};
+    opacity: 0.6;
   }
 `;
 
@@ -97,8 +98,7 @@ export const Input = styled.input`
   height: 38px;
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
-  border: 2px #ffffff solid;
-  font-size: 15px;
+  border: 3px #ffffff solid;
   outline: none;
   background-color: transparent;
   color: ${colors.white};
@@ -132,6 +132,15 @@ export const Text = styled.h1`
         return css`
           color: ${colors.green};
         `;
+      case "walletName":
+        return css`
+          color: ${colors.green};
+        `;
+      case "walletChips":
+        return css`
+          color: ${colors.white};
+          font-weight: 400;
+        `;
 
       default:
         return css`
@@ -146,5 +155,19 @@ export const CardsWrapper = styled.div`
 `;
 
 export const ImageWrapper = styled.div`
-  width: 10px;
+  width: 30px;
+  position: relative;
+`;
+
+export const WalletsWrapper = styled.div`
+  top: 50%;
+  right: 26px;
+  position: absolute;
+`;
+
+export const BetValueWrapper = styled.div`
+  width: 50px;
+  position: absolute;
+  top: 28px;
+  left: 17px;
 `;

@@ -9,16 +9,25 @@ import {
   SpaceBetween,
   TableWrapper,
   Text,
-  BetWrapper,
   Input,
   CardsWrapper,
   ImageWrapper,
   BetContainer,
+  WalletsWrapper,
+  BetValueWrapper,
 } from "./BlackJack.style";
 import { cards } from "../assets/images";
 import { InfoModal } from "../components/InfoModal";
 import { Spacer } from "../components/Spacer";
 import { colors } from "../colors/colors";
+import {
+  WalletContainer,
+  WalletDealerCoins,
+  WalletDealerName,
+  WalletPlayerCoins,
+  WalletPlayerName,
+  WalletWrapper,
+} from "../components/Wallets";
 
 export function BlackJack() {
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
@@ -105,7 +114,7 @@ export function BlackJack() {
 
     //FIRST PLAYER CARD
     for (let index = 0; index < 1; index++) {
-      const filteredCardState = cardState.filter((card) => card !== dealerCard);
+      // const filteredCardState = cardState.filter((card) => card !== dealerCard);
 
       playerCard = cardState.pop();
 
@@ -430,11 +439,19 @@ export function BlackJack() {
   function getUserName() {
     const userName = localStorage.getItem("playerName");
 
-    return userName;
+    if (userName) {
+      return userName;
+    } else {
+      return "";
+    }
   }
 
   useEffect(() => {
     isUserStartedGame();
+    setGameState((prevState) => ({
+      ...prevState,
+      isModalVisible: true,
+    }));
   }, []);
 
   return (
@@ -450,13 +467,17 @@ export function BlackJack() {
         handleCreateNewGame={newGame}
         handleGameState={setGameState}
         gameState={gameState}
+        canContinue={isUserStartedGame()}
+        nextGame={nextGame}
       />
       <TableWrapper>
         <SpaceBetweenGame>
           <DealerWrapper>
             {cardDealerImages.length > 0 && (
               <>
-                <Text size={32}>Dealer</Text>
+                <Text type="dealer" size={32}>
+                  Dealer
+                </Text>
                 <Spacer margin={30} />
               </>
             )}
@@ -471,6 +492,23 @@ export function BlackJack() {
           </DealerWrapper>
 
           <BetContainer>
+            <div>
+              {gameState.bet !== 0 ? (
+                <ImageWrapper>
+                  <IMG type="chips" src={cards.chips} alt="chips" />
+                  <BetValueWrapper>
+                    <Text size={12} align="left" type="player">
+                      $ {""}
+                      {gameState.bet.length > 4
+                        ? gameState.bet.substring(0, 3) + "..."
+                        : gameState.bet}
+                    </Text>
+                  </BetValueWrapper>
+                </ImageWrapper>
+              ) : (
+                <div style={{ height: "77px" }} />
+              )}
+            </div>
             <Input
               type="number"
               title="bet"
@@ -486,7 +524,7 @@ export function BlackJack() {
             <Button
               isBet
               xSize={100}
-              ySize={42}
+              ySize={44}
               title="apply"
               onClick={handleApplyBet}
               bgColor={colors.white}
@@ -494,25 +532,44 @@ export function BlackJack() {
             >
               {!gameState.bet ? "Apply" : "Applied"}
             </Button>
-
-            <div>
-              {gameState.bet !== 0 && (
-                <ImageWrapper>
-                  <IMG type="chips" src={cards.chips} alt="chips" />
-                </ImageWrapper>
-              )}
-              <Text size={18} align="left" type="player">
-                Bet: {gameState.bet}$
-              </Text>
-            </div>
-
-            <Text align={"right"} type="dealer">
-              Wallet: {gameState.dealerWallet}$
-            </Text>
-            <Text align="right" type="player">
-              Wallet: {gameState.playerWallet}$
-            </Text>
           </BetContainer>
+
+          <WalletsWrapper>
+            <WalletContainer>
+              <WalletWrapper>
+                <WalletDealerName>
+                  <Text type="walletName">Dealer's chips:</Text>
+                </WalletDealerName>
+                <WalletDealerCoins>
+                  <Text size={17} type="walletChips" textColor={colors.white}>
+                    $ {""}
+                    {gameState.dealerWallet.length > 6
+                      ? gameState.dealerWallet.substring(0, 6) + "..."
+                      : gameState.dealerWallet}
+                  </Text>
+                </WalletDealerCoins>
+              </WalletWrapper>
+
+              <WalletWrapper>
+                <WalletPlayerName>
+                  <Text type="walletName" textColor={colors.green}>
+                    {getUserName().length > 8
+                      ? getUserName().substring(0, 8) + `'s` + "..."
+                      : getUserName()}{" "}
+                    chips:
+                  </Text>
+                </WalletPlayerName>
+                <WalletPlayerCoins>
+                  <Text size={17} type="walletChips" textColor={colors.white}>
+                    $ {""}
+                    {gameState.playerWallet.length > 6
+                      ? gameState.playerWallet.substring(0, 6) + "..."
+                      : gameState.playerWallet}
+                  </Text>
+                </WalletPlayerCoins>
+              </WalletWrapper>
+            </WalletContainer>
+          </WalletsWrapper>
 
           <PlayerWrapper>
             {cardPlayerImages.length > 0 ? (

@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from "react-modal";
-import { Button, IMG, Text } from "../pages/BlackJack.style";
+import { Button, IMG, SpaceBetween, Text } from "../pages/BlackJack.style";
 import { IconsWrapper, Input, InputWrapper } from "./Input.style";
 import { cards } from "../assets/images";
 import { colors } from "../colors/colors";
@@ -10,6 +10,8 @@ export function InfoModal({
   handleCreateNewGame,
   handleGameState,
   gameState,
+  canContinue,
+  nextGame,
 }) {
   const customStyles = {
     content: {
@@ -41,7 +43,7 @@ export function InfoModal({
       </IconsWrapper>
 
       <Text type={"modal"} size={20}>
-        Before to start please introduce your name!
+        If you want to start a new game plase introduce your name!
       </Text>
       <div
         style={{
@@ -75,16 +77,31 @@ export function InfoModal({
             />
           </InputWrapper>
 
-          <Button
-            disabled={gameState.userName.length < 1}
-            textColor={colors.white}
-            onClick={handleCreateNewGame}
-            bgColor={
-              gameState.userName.length > 0 ? `${colors.red}` : `${colors.gray}`
-            }
-          >
-            New game
-          </Button>
+          <SpaceBetween>
+            <Button
+              disabled={gameState.userName.length < 1}
+              textColor={colors.white}
+              onClick={handleCreateNewGame}
+              bgColor={
+                gameState.userName.length > 0
+                  ? `${colors.red}`
+                  : `${colors.gray}`
+              }
+            >
+              New game
+            </Button>
+
+            {canContinue && (
+              <Button
+                marginL={16}
+                textColor={colors.white}
+                onClick={nextGame}
+                bgColor={colors.green}
+              >
+                Continue
+              </Button>
+            )}
+          </SpaceBetween>
         </div>
       </div>
     </Modal>
