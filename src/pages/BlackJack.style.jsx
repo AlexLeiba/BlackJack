@@ -107,6 +107,7 @@ export const Input = styled.input`
 `;
 
 export const Text = styled.h1`
+  display: block;
   font-size: ${({ size }) => (size ? `${size}px` : "13px")};
   text-align: ${({ align }) => (align ? align : "center")};
   margin: 0;

@@ -29,10 +29,12 @@ import {
   WalletWrapper,
 } from "../components/Wallets";
 
+let cardState = [];
+
 export function BlackJack() {
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
   const [cardDealerImages, setCardDealerImages] = useState([]);
-  const [cardState] = useState([]);
+  // const [cardState] = useState([]);
   const [gameState, setGameState] = useState({
     dealerSum: 0,
     playerSum: 0,
@@ -63,6 +65,7 @@ export function BlackJack() {
   let deck = [];
 
   function buildDeck() {
+    cardState = [];
     let cardValues = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
     let cardTypes = ["C", "D", "H", "S"];
 
@@ -86,7 +89,9 @@ export function BlackJack() {
   }
 
   function getValue(newCard) {
+    console.log("new", newCard);
     let data = newCard.split("-");
+    console.log("split", data);
     let value = data[0];
 
     if (isNaN(value)) {
@@ -114,8 +119,6 @@ export function BlackJack() {
 
     //FIRST PLAYER CARD
     for (let index = 0; index < 1; index++) {
-      // const filteredCardState = cardState.filter((card) => card !== dealerCard);
-
       playerCard = cardState.pop();
 
       playerSum += getValue(playerCard);
@@ -147,15 +150,17 @@ export function BlackJack() {
   }
 
   function hit() {
+    if (!gameState.bet) {
+      return alert("Please make your BET before to HIT!");
+    }
     if (!gameState.canHit) {
       return;
     }
 
     const playerCard = cardState.pop();
 
-    //to filtrate each time removed element from an global array
+    console.log("playerCard", cardState);
 
-    // here to filter dealer array with this card.
     setCardPlayerImages((prev) => [...prev, playerCard]);
 
     playerSum += getValue(playerCard);
@@ -180,13 +185,11 @@ export function BlackJack() {
   }
 
   function stay() {
+    if (!gameState.bet) {
+      return alert("Please make your BET before to STAY!");
+    }
+
     dealerCard = cardState.pop();
-    //to filtrate each time removed element from an global array and then to get next card from filtered array
-
-    // here to filter player array with this newCard.
-
-    console.log("carddd", dealerCard);
-    console.log("cardstate", cardState);
 
     setCardDealerImages((prevValue) => [...prevValue, dealerCard]);
 
@@ -314,9 +317,22 @@ export function BlackJack() {
   }
 
   function handleApplyBet() {
+    if (gameState.betQuantity > gameState.playerWallet) {
+      alert(
+        "You do not have enough money in your wallet, try to make a smaller BET or start a new game!"
+      );
+    } else {
+      setGameState((prevValue) => ({
+        ...prevValue,
+        bet: gameState.betQuantity,
+      }));
+    }
+  }
+
+  function handleBet(value) {
     setGameState((prevValue) => ({
       ...prevValue,
-      bet: gameState.betQuantity,
+      betQuantity: value,
     }));
   }
 
@@ -493,32 +509,23 @@ export function BlackJack() {
 
           <BetContainer>
             <div>
-              {gameState.bet !== 0 ? (
-                <ImageWrapper>
-                  <IMG type="chips" src={cards.chips} alt="chips" />
-                  <BetValueWrapper>
-                    <Text size={12} align="left" type="player">
-                      $ {""}
-                      {gameState.bet.length > 4
-                        ? gameState.bet.substring(0, 3) + "..."
-                        : gameState.bet}
-                    </Text>
-                  </BetValueWrapper>
-                </ImageWrapper>
-              ) : (
-                <div style={{ height: "77px" }} />
-              )}
+              <ImageWrapper>
+                <IMG type="chips" src={cards.chips} alt="chips" />
+                <BetValueWrapper>
+                  <Text size={12} align="left" type="player">
+                    $ {""}
+                    {gameState.bet.length > 4
+                      ? gameState.bet.substring(0, 3) + "..."
+                      : gameState.bet}
+                  </Text>
+                </BetValueWrapper>
+              </ImageWrapper>
             </div>
             <Input
               type="number"
               title="bet"
               value={gameState.betQuantity}
-              onChange={(e) =>
-                setGameState((prevValue) => ({
-                  ...prevValue,
-                  betQuantity: e.target.value,
-                }))
-              }
+              onChange={(e) => handleBet(e.target.value)}
             />
 
             <Button
@@ -643,7 +650,7 @@ export function BlackJack() {
 
               {isUserStartedGame() && (
                 <Button
-                  marginL={16}
+                  marginL={48}
                   onClick={nextGame}
                   textColor={colors.green}
                 >
@@ -651,7 +658,7 @@ export function BlackJack() {
                 </Button>
               )}
               <Button
-                marginL={32}
+                marginL={16}
                 textColor={colors.white}
                 onClick={createNewGame}
                 bgColor={colors.red}

@@ -55,8 +55,16 @@ import chips from "./chips.png";
 import close from "./close.png";
 import backgroundImage from "./background-image.png";
 import table from "./table.png";
+import vector1 from "./Vector1.png";
+import vector2 from "./Vector2.png";
+import vector3 from "./Vector3.png";
+import vector4 from "./Vector4.png";
 
 export const cards = {
+  vector1,
+  vector2,
+  vector3,
+  vector4,
   table,
   backgroundImage,
   close,
