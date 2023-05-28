@@ -32,9 +32,9 @@ import {
 let cardState = [];
 
 export function BlackJack() {
+  console.log(cardState);
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
   const [cardDealerImages, setCardDealerImages] = useState([]);
-  // const [cardState] = useState([]);
   const [gameState, setGameState] = useState({
     dealerSum: 0,
     playerSum: 0,
@@ -50,7 +50,7 @@ export function BlackJack() {
     dealerWallet: 0,
     playerWallet: 0,
     betQuantity: 100,
-    bet: 0,
+    bet: 100,
     userName: "",
     isModalVisible: false,
   });
@@ -61,7 +61,8 @@ export function BlackJack() {
   let playerAceCount = 0;
 
   let dealerCard;
-  let playerCard;
+  let playerCard1;
+  let playerCard2;
   let deck = [];
 
   function buildDeck() {
@@ -119,12 +120,19 @@ export function BlackJack() {
 
     //FIRST PLAYER CARD
     for (let index = 0; index < 1; index++) {
-      playerCard = cardState.pop();
+      playerCard1 = cardState.pop();
 
-      playerSum += getValue(playerCard);
-      playerAceCount += checkAce(playerCard);
-      deck.push(playerCard);
-      setCardPlayerImages((prev) => [...prev, playerCard]);
+      playerSum += getValue(playerCard1);
+      playerAceCount += checkAce(playerCard1);
+      deck.push(playerCard1);
+      setCardPlayerImages((prev) => [...prev, playerCard1]);
+
+      playerCard2 = cardState.pop();
+
+      playerSum += getValue(playerCard2);
+      playerAceCount += checkAce(playerCard2);
+      deck.push(playerCard2);
+      setCardPlayerImages((prev) => [...prev, playerCard2]);
     }
 
     setGameState((prev) => ({
@@ -135,12 +143,12 @@ export function BlackJack() {
       dealerAceCount,
       canStay: true,
       canHit: true,
-      dealerWallet,
-      playerWallet,
+      dealerWallet: Number(dealerWallet),
+      playerWallet: Number(playerWallet),
       betQuantity: 100,
       playerWon: false,
       dealerWon: false,
-      bet: 0,
+      bet: 50,
       isPlayer: false,
       isDealer: false,
       isDraw: false,
@@ -252,75 +260,52 @@ export function BlackJack() {
   }
 
   function checkDealerValue() {
-    if (cardDealerImages.length === 2) {
-      if (
-        gameState.dealerSum > 17 &&
-        gameState.dealerSum < 21 &&
-        gameState.dealerSum < gameState.playerSum
-      ) {
-        setGameState((prevState) => ({
-          ...prevState,
-          playerWon: true,
-          dealerWon: false,
-          canHit: false,
-          canStay: false,
-        }));
-      }
-      if (
-        gameState.dealerSum > 17 &&
-        gameState.dealerSum < 21 &&
-        gameState.dealerSum > gameState.playerSum
-      ) {
-        setGameState((prevState) => ({
-          ...prevState,
-          dealerWon: true,
-          playerWon: false,
-          canHit: false,
-          canStay: false,
-        }));
-      }
+    if (
+      gameState.dealerSum > 17 &&
+      gameState.dealerSum < 21 &&
+      gameState.dealerSum < gameState.playerSum
+    ) {
+      setGameState((prevState) => ({
+        ...prevState,
+        playerWon: true,
+        dealerWon: false,
+        canHit: false,
+        canStay: false,
+      }));
     }
-    if (cardDealerImages.length === 3) {
-      if (
-        gameState.playerSum <= 21 &&
-        gameState.playerSum > gameState.dealerSum
-      ) {
-        setGameState((prevState) => ({
-          ...prevState,
-          playerWon: true,
-          dealerWon: false,
-          canHit: false,
-          canStay: false,
-        }));
-      }
-      if (
-        gameState.dealerSum <= 21 &&
-        gameState.dealerSum > gameState.playerSum
-      ) {
-        setGameState((prevState) => ({
-          ...prevState,
-          dealerWon: true,
-          playerWon: false,
-          canHit: false,
-          canStay: false,
-        }));
-      }
-      if (gameState.playerSum === gameState.dealerSum) {
-        setGameState((prevValue) => ({
-          ...prevValue,
-          isDraw: true,
-          playerWon: false,
-          dealerWon: false,
-        }));
-      }
+    if (
+      gameState.dealerSum > 17 &&
+      gameState.dealerSum < 21 &&
+      gameState.dealerSum > gameState.playerSum
+    ) {
+      setGameState((prevState) => ({
+        ...prevState,
+        dealerWon: true,
+        playerWon: false,
+        canHit: false,
+        canStay: false,
+      }));
+    }
+
+    if (gameState.playerSum === gameState.dealerSum) {
+      setGameState((prevValue) => ({
+        ...prevValue,
+        isDraw: true,
+        playerWon: false,
+        dealerWon: false,
+        canStay: false,
+      }));
     }
   }
 
   function handleApplyBet() {
+    console.log(gameState.betQuantity, gameState.playerWallet);
     if (gameState.betQuantity > gameState.playerWallet) {
       alert(
         "You do not have enough money in your wallet, try to make a smaller BET or start a new game!"
       );
+    } else if (gameState.betQuantity < 1) {
+      alert("Your bet should be higher than $0 !");
     } else {
       setGameState((prevValue) => ({
         ...prevValue,
@@ -355,9 +340,11 @@ export function BlackJack() {
 
       setGameState((prevValue) => ({
         ...prevValue,
-        playerWallet: newWalletPlayerValue,
-        dealerWallet: newWalletDealerValue,
+        playerWallet: Number(newWalletPlayerValue),
+        dealerWallet: Number(newWalletDealerValue),
         isDealer: true,
+        canStay: false,
+        canHit: false,
       }));
     }
 
@@ -376,9 +363,11 @@ export function BlackJack() {
 
       setGameState((prevValue) => ({
         ...prevValue,
-        playerWallet: newWalletPlayerValue,
-        dealerWallet: newWalletDealerValue,
+        playerWallet: Number(newWalletPlayerValue),
+        dealerWallet: Number(newWalletDealerValue),
         isPlayer: true,
+        canStay: false,
+        canHit: false,
       }));
     }
   }, [
@@ -388,6 +377,9 @@ export function BlackJack() {
     gameState.playerWon,
     gameState.bet,
     cardDealerImages.length,
+    cardPlayerImages.length,
+    gameState.isDealer,
+    gameState.isPlayer,
   ]);
 
   function newGame() {
