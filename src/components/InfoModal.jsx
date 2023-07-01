@@ -14,6 +14,7 @@ export function InfoModal({
   gameState,
   canContinue,
   nextGame,
+  playerCards,
 }) {
   const customStyles = {
     content: {
@@ -30,7 +31,7 @@ export function InfoModal({
   };
 
   return (
-    <Modal isOpen={isVisible} style={customStyles}>
+    <Modal ariaHideApp={false} isOpen={isVisible} style={customStyles}>
       <IconsWrapper>
         <IMG
           style={{ height: "20px", cursor: "pointer" }}
@@ -44,7 +45,7 @@ export function InfoModal({
         />
       </IconsWrapper>
       <Text type={"blackjack"} size={25}>
-        Welcome to Blackjack
+        {playerCards > 0 ? "Blackjack" : " Welcome to Blackjack"}
       </Text>
 
       <Text type={"modal"} size={20}>
@@ -94,7 +95,14 @@ export function InfoModal({
             <Button
               marginL={16}
               textColor={colors.white}
-              onClick={nextGame}
+              onClick={() =>
+                playerCards > 0
+                  ? handleGameState((prevState) => ({
+                      ...prevState,
+                      isModalVisible: false,
+                    }))
+                  : nextGame()
+              }
               bgColor={colors.green}
             >
               Continue

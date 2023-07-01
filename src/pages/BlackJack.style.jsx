@@ -4,8 +4,10 @@ import { colors } from "../colors/colors";
 
 export const Container = styled.div`
   width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
+  align-items: center;
   background-image: url(${cards.backgroundImage});
   background-position: center;
   background-size: cover;
@@ -13,7 +15,8 @@ export const Container = styled.div`
 `;
 
 export const TableWrapper = styled.div`
-  width: 800px;
+  width: 600px;
+  height: 900px;
   background-image: url(${cards.table});
   background-position: center;
   background-size: cover;
@@ -22,7 +25,7 @@ export const TableWrapper = styled.div`
   padding: 0 26px 0 26px;
 
   /* offset-x | offset-y | blur-radius | color */
-  box-shadow: 0 10px 35px black;
+  box-shadow: 0 20px 55px black;
   border-radius: 50px;
   position: relative;
 `;
@@ -44,7 +47,7 @@ export const SpaceBetweenGame = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
+  height: 100%;
 `;
 export const SpaceBetween = styled.div`
   display: flex;
@@ -53,8 +56,24 @@ export const SpaceBetween = styled.div`
 `;
 
 export const IMG = styled.img`
-  height: ${({ type }) => (type === "chips" ? "68px" : "150px")};
-  margin: 2px;
+  ${({ type }) => {
+    switch (type) {
+      case "chips":
+        return css`
+          height: 68px;
+        `;
+      case "cards":
+        return css`
+          height: 100px;
+          margin: 2px;
+        `;
+
+      default:
+        return css`
+          height: 100px;
+        `;
+    }
+  }}
 `;
 
 export const BetContainer = styled.span`

@@ -30,9 +30,12 @@ import {
 } from "../components/Wallets";
 
 let cardState = [];
+let dealerCard;
+let playerCard1;
+let playerCard2;
+let deck = [];
 
 export function BlackJack() {
-  console.log(cardState);
   const [cardPlayerImages, setCardPlayerImages] = useState([]);
   const [cardDealerImages, setCardDealerImages] = useState([]);
   const [gameState, setGameState] = useState({
@@ -60,11 +63,6 @@ export function BlackJack() {
   let dealerAceCount = 0;
   let playerAceCount = 0;
 
-  let dealerCard;
-  let playerCard1;
-  let playerCard2;
-  let deck = [];
-
   function buildDeck() {
     cardState = [];
     let cardValues = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
@@ -90,9 +88,8 @@ export function BlackJack() {
   }
 
   function getValue(newCard) {
-    console.log("new", newCard);
     let data = newCard.split("-");
-    console.log("split", data);
+
     let value = data[0];
 
     if (isNaN(value)) {
@@ -167,8 +164,6 @@ export function BlackJack() {
 
     const playerCard = cardState.pop();
 
-    console.log("playerCard", cardState);
-
     setCardPlayerImages((prev) => [...prev, playerCard]);
 
     playerSum += getValue(playerCard);
@@ -223,10 +218,6 @@ export function BlackJack() {
     }
   }
 
-  useEffect(() => {
-    checkDealerValue();
-  }, [cardDealerImages.length]);
-
   function reduceAce(playerSum, playerAceCount) {
     let newPlayerSum = playerSum;
     if (playerSum > 21 && playerAceCount > 0) {
@@ -265,7 +256,7 @@ export function BlackJack() {
       gameState.dealerSum < 21 &&
       gameState.dealerSum < gameState.playerSum
     ) {
-      setGameState((prevState) => ({
+      return setGameState((prevState) => ({
         ...prevState,
         playerWon: true,
         dealerWon: false,
@@ -278,7 +269,8 @@ export function BlackJack() {
       gameState.dealerSum < 21 &&
       gameState.dealerSum > gameState.playerSum
     ) {
-      setGameState((prevState) => ({
+      console.log("true");
+      return setGameState((prevState) => ({
         ...prevState,
         dealerWon: true,
         playerWon: false,
@@ -287,8 +279,8 @@ export function BlackJack() {
       }));
     }
 
-    if (gameState.playerSum === gameState.dealerSum) {
-      setGameState((prevValue) => ({
+    if (gameState.playerSum === gameState.dealerSum && playerSum !== 0) {
+      return setGameState((prevValue) => ({
         ...prevValue,
         isDraw: true,
         playerWon: false,
@@ -298,14 +290,19 @@ export function BlackJack() {
     }
   }
 
+  useEffect(() => {
+    checkDealerValue();
+  }, [cardDealerImages.length]);
+
   function handleApplyBet() {
-    console.log(gameState.betQuantity, gameState.playerWallet);
     if (gameState.betQuantity > gameState.playerWallet) {
       alert(
         "You do not have enough money in your wallet, try to make a smaller BET or start a new game!"
       );
     } else if (gameState.betQuantity < 1) {
       alert("Your bet should be higher than $0 !");
+    } else if (gameState.dealerWallet < gameState.betQuantity) {
+      alert("Dealer do not has enough money, make a smaller bet please !");
     } else {
       setGameState((prevValue) => ({
         ...prevValue,
@@ -322,6 +319,7 @@ export function BlackJack() {
   }
 
   // WINNER CHECK
+
   useEffect(() => {
     const playerWallet = localStorage.getItem("playerWallet");
     const dealerWallet = localStorage.getItem("dealerWallet");
@@ -330,15 +328,16 @@ export function BlackJack() {
       gameState.dealerWon ||
       gameState.playerSum > 21
     ) {
+      console.log("true");
       const newWalletPlayerValue =
-        parseInt(playerWallet) - Number(gameState.bet);
+        parseInt(playerWallet) - parseInt(gameState.bet);
       const newWalletDealerValue =
-        parseInt(dealerWallet) + Number(gameState.bet);
+        parseInt(dealerWallet) + parseInt(gameState.bet);
 
       localStorage.setItem("playerWallet", newWalletPlayerValue);
       localStorage.setItem("dealerWallet", newWalletDealerValue);
 
-      setGameState((prevValue) => ({
+      return setGameState((prevValue) => ({
         ...prevValue,
         playerWallet: Number(newWalletPlayerValue),
         dealerWallet: Number(newWalletDealerValue),
@@ -360,8 +359,8 @@ export function BlackJack() {
 
       localStorage.setItem("playerWallet", newWalletPlayerValue);
       localStorage.setItem("dealerWallet", newWalletDealerValue);
-
-      setGameState((prevValue) => ({
+      console.log("true"); //here
+      return setGameState((prevValue) => ({
         ...prevValue,
         playerWallet: Number(newWalletPlayerValue),
         dealerWallet: Number(newWalletDealerValue),
@@ -370,17 +369,9 @@ export function BlackJack() {
         canHit: false,
       }));
     }
-  }, [
-    gameState.dealerSum,
-    gameState.playerSum,
-    gameState.dealerWon,
-    gameState.playerWon,
-    gameState.bet,
-    cardDealerImages.length,
-    cardPlayerImages.length,
-    gameState.isDealer,
-    gameState.isPlayer,
-  ]);
+  }, [playerSum, dealerSum, playerCard2, dealerCard]);
+
+  console.log("game stae", gameState);
 
   function newGame() {
     localStorage.setItem("dealerWallet", 1000);
@@ -456,6 +447,7 @@ export function BlackJack() {
 
   useEffect(() => {
     isUserStartedGame();
+
     setGameState((prevState) => ({
       ...prevState,
       isModalVisible: true,
@@ -477,25 +469,32 @@ export function BlackJack() {
         gameState={gameState}
         canContinue={isUserStartedGame()}
         nextGame={nextGame}
+        playerCards={cardPlayerImages.length}
       />
       <TableWrapper>
         <SpaceBetweenGame>
           <DealerWrapper>
-            {cardDealerImages.length > 0 && (
+            {cardDealerImages.length > 0 ? (
               <>
                 <Text type="dealer" size={32}>
                   Dealer
                 </Text>
                 <Spacer margin={30} />
               </>
+            ) : (
+              <Text size={25} type="player">
+                Welcome to Blackjack
+              </Text>
             )}
 
             {cardDealerImages.length === 1 && (
-              <IMG src={cards.back} alt="card" />
+              <IMG type="cards" src={cards.back} alt="card" />
             )}
 
             {cardDealerImages.map((data, index) => {
-              return <IMG src={cards[data]} alt="card" key={index} />;
+              return (
+                <IMG type="cards" src={cards[data]} alt="card" key={index} />
+              );
             })}
           </DealerWrapper>
 
@@ -523,13 +522,13 @@ export function BlackJack() {
             <Button
               isBet
               xSize={100}
-              ySize={44}
-              title="apply"
+              ySize={44.4}
+              title="Raise"
               onClick={handleApplyBet}
               bgColor={colors.white}
               textColor={!gameState.bet ? colors.red : colors.green}
             >
-              {!gameState.bet ? "Apply" : "Applied"}
+              {!gameState.bet ? "Raise" : "Raise"}
             </Button>
           </BetContainer>
 
@@ -553,8 +552,8 @@ export function BlackJack() {
                 <WalletPlayerName>
                   <Text type="walletName" textColor={colors.green}>
                     {getUserName().length > 8
-                      ? getUserName().substring(0, 8) + `'s` + "..."
-                      : getUserName()}{" "}
+                      ? getUserName().substring(0, 7) + `'s` + "..."
+                      : getUserName() + `'s`}{" "}
                     chips:
                   </Text>
                 </WalletPlayerName>
@@ -571,13 +570,9 @@ export function BlackJack() {
           </WalletsWrapper>
 
           <PlayerWrapper>
-            {cardPlayerImages.length > 0 ? (
+            {cardPlayerImages.length > 0 && (
               <Text size={25} type="player">
                 {getUserName()}
-              </Text>
-            ) : (
-              <Text size={25} type="player">
-                Welcome to Blackjack
               </Text>
             )}
             <Spacer margin={32} />
@@ -587,7 +582,7 @@ export function BlackJack() {
                 <>
                   <Text size={18} type="won">
                     {gameState.dealerWallet < 1
-                      ? "You Won all dealer's money Congrats!!"
+                      ? "You Won all dealer's money Congrats!"
                       : "You Won!"}
                   </Text>
                   <Spacer />
@@ -607,29 +602,48 @@ export function BlackJack() {
                 <>
                   <Text size={18} type={"lost"}>
                     {gameState.playerWallet < 1
-                      ? "You lost all your money!"
+                      ? "Game over, you lost all your money!"
                       : "You lost!"}
+                  </Text>
+                  <Spacer />
+                </>
+              )}
+              {gameState.dealerWon && (
+                <>
+                  <Text size={18} type={"lost"}>
+                    {gameState.playerWallet < 1
+                      ? "Game over, you lost all your money!"
+                      : "Dealer Won!"}
                   </Text>
                   <Spacer />
                 </>
               )}
 
               {cardPlayerImages.map((data, index) => {
-                return <IMG src={cards[data]} alt="card" key={index} />;
+                return (
+                  <IMG type="cards" src={cards[data]} alt="card" key={index} />
+                );
               })}
             </CardsWrapper>
+
             <Spacer margin={76} />
 
             <SpaceBetween>
               {cardPlayerImages.length > 0 && (
                 <>
                   {gameState.canHit && (
-                    <Button textColor={colors.green} marginL={16} onClick={hit}>
+                    <Button
+                      title="Hit"
+                      textColor={colors.green}
+                      marginL={16}
+                      onClick={hit}
+                    >
                       Hit
                     </Button>
                   )}
                   {gameState.canStay && (
                     <Button
+                      title="Stay"
                       textColor={colors.green}
                       marginL={16}
                       onClick={stay}
@@ -642,6 +656,7 @@ export function BlackJack() {
 
               {isUserStartedGame() && (
                 <Button
+                  title="Next game"
                   marginL={48}
                   onClick={nextGame}
                   textColor={colors.green}
@@ -650,6 +665,7 @@ export function BlackJack() {
                 </Button>
               )}
               <Button
+                title="New game"
                 marginL={16}
                 textColor={colors.white}
                 onClick={createNewGame}
