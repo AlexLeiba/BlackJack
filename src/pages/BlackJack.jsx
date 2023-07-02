@@ -30,9 +30,7 @@ import {
 } from "../components/Wallets";
 
 let cardState = [];
-let dealerCard = "";
-let playerCard1 = "";
-let playerCard2 = "";
+
 let deck = [];
 
 export function BlackJack() {
@@ -55,6 +53,10 @@ export function BlackJack() {
     userName: "",
     isModalVisible: false,
   });
+
+  let dealerCard = "";
+  let playerCard1 = "";
+  let playerCard2 = "";
 
   let playerSum = 0;
   let dealerAceCount = 0;
