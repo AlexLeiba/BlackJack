@@ -30,9 +30,9 @@ import {
 } from "../components/Wallets";
 
 let cardState = [];
-let dealerCard;
-let playerCard1;
-let playerCard2;
+let dealerCard = "";
+let playerCard1 = "";
+let playerCard2 = "";
 let deck = [];
 
 export function BlackJack() {
@@ -371,7 +371,14 @@ export function BlackJack() {
         canStay: false,
       }));
     }
-  }, [cardDealerImages.length, cardPlayerImages.length]);
+  }, [
+    cardDealerImages.length,
+    cardPlayerImages.length,
+    gameState.bet,
+    gameState.dealerSum,
+    gameState.playerSum,
+    playerSum,
+  ]);
 
   function newGame() {
     localStorage.setItem("dealerWallet", 1000);
