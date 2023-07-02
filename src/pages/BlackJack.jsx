@@ -45,8 +45,6 @@ export function BlackJack() {
     canStay: true,
     dealerWon: false,
     playerWon: false,
-    isPlayer: false,
-    isDealer: false,
     isDraw: false,
     dealerAceCount: 0,
     playerAceCount: 0,
@@ -145,8 +143,6 @@ export function BlackJack() {
       playerWon: false,
       dealerWon: false,
       bet: 50,
-      isPlayer: false,
-      isDealer: false,
       isDraw: false,
       userName: playerName,
       isModalVisible: false,
@@ -249,49 +245,6 @@ export function BlackJack() {
     return 0;
   }
 
-  function checkDealerValue() {
-    if (
-      gameState.dealerSum > 17 &&
-      gameState.dealerSum < 21 &&
-      gameState.dealerSum < gameState.playerSum
-    ) {
-      return setGameState((prevState) => ({
-        ...prevState,
-        playerWon: true,
-        dealerWon: false,
-        canHit: false,
-        canStay: false,
-      }));
-    }
-    if (
-      gameState.dealerSum > 17 &&
-      gameState.dealerSum < 21 &&
-      gameState.dealerSum > gameState.playerSum
-    ) {
-      return setGameState((prevState) => ({
-        ...prevState,
-        dealerWon: true,
-        playerWon: false,
-        canHit: false,
-        canStay: false,
-      }));
-    }
-
-    if (gameState.playerSum === gameState.dealerSum && playerSum !== 0) {
-      return setGameState((prevValue) => ({
-        ...prevValue,
-        isDraw: true,
-        playerWon: false,
-        dealerWon: false,
-        canStay: false,
-      }));
-    }
-  }
-
-  useEffect(() => {
-    checkDealerValue();
-  }, [cardDealerImages.length]);
-
   function handleApplyBet() {
     if (gameState.betQuantity > gameState.playerWallet) {
       alert(
@@ -305,6 +258,7 @@ export function BlackJack() {
       setGameState((prevValue) => ({
         ...prevValue,
         bet: gameState.betQuantity,
+        betQuantity: gameState.betQuantity * 2,
       }));
     }
   }
@@ -321,12 +275,7 @@ export function BlackJack() {
   useEffect(() => {
     const playerWallet = localStorage.getItem("playerWallet");
     const dealerWallet = localStorage.getItem("dealerWallet");
-    if (
-      gameState.dealerSum === 21 ||
-      gameState.dealerWon ||
-      gameState.playerSum > 21
-    ) {
-      console.log("true");
+    if (gameState.dealerSum === 21 || gameState.playerSum > 21) {
       const newWalletPlayerValue =
         parseInt(playerWallet) - parseInt(gameState.bet);
       const newWalletDealerValue =
@@ -339,16 +288,37 @@ export function BlackJack() {
         ...prevValue,
         playerWallet: Number(newWalletPlayerValue),
         dealerWallet: Number(newWalletDealerValue),
-        isDealer: true,
+        dealerWon: true,
+        playerWon: false,
+        canStay: false,
+        canHit: false,
+      }));
+    }
+
+    if (gameState.playerSum === 21 || gameState.dealerSum > 21) {
+      const newWalletPlayerValue =
+        parseInt(playerWallet) + Number(gameState.bet);
+      const newWalletDealerValue =
+        parseInt(dealerWallet) - Number(gameState.bet);
+
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
+
+      return setGameState((prevValue) => ({
+        ...prevValue,
+        playerWallet: Number(newWalletPlayerValue),
+        dealerWallet: Number(newWalletDealerValue),
+        playerWon: true,
+        dealerWon: false,
         canStay: false,
         canHit: false,
       }));
     }
 
     if (
-      gameState.playerSum === 21 ||
-      gameState.playerWon ||
-      gameState.dealerSum > 21
+      gameState.dealerSum > 17 &&
+      gameState.dealerSum < 21 &&
+      gameState.dealerSum < gameState.playerSum
     ) {
       const newWalletPlayerValue =
         parseInt(playerWallet) + Number(gameState.bet);
@@ -357,19 +327,51 @@ export function BlackJack() {
 
       localStorage.setItem("playerWallet", newWalletPlayerValue);
       localStorage.setItem("dealerWallet", newWalletDealerValue);
-      console.log("true"); //here
-      return setGameState((prevValue) => ({
-        ...prevValue,
+
+      return setGameState((prevState) => ({
+        ...prevState,
         playerWallet: Number(newWalletPlayerValue),
         dealerWallet: Number(newWalletDealerValue),
-        isPlayer: true,
-        canStay: false,
+        playerWon: true,
+        dealerWon: false,
         canHit: false,
+        canStay: false,
       }));
     }
-  }, [playerSum, dealerSum, cardDealerImages.length, cardPlayerImages.length]);
+    if (
+      gameState.dealerSum > 17 &&
+      gameState.dealerSum < 21 &&
+      gameState.dealerSum > gameState.playerSum
+    ) {
+      const newWalletPlayerValue =
+        parseInt(playerWallet) - parseInt(gameState.bet);
+      const newWalletDealerValue =
+        parseInt(dealerWallet) + parseInt(gameState.bet);
 
-  console.log("game stae", gameState);
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
+
+      return setGameState((prevState) => ({
+        ...prevState,
+        playerWallet: Number(newWalletPlayerValue),
+        dealerWallet: Number(newWalletDealerValue),
+        dealerWon: true,
+        playerWon: false,
+        canHit: false,
+        canStay: false,
+      }));
+    }
+
+    if (gameState.playerSum === gameState.dealerSum && playerSum !== 0) {
+      return setGameState((prevValue) => ({
+        ...prevValue,
+        isDraw: true,
+        playerWon: false,
+        dealerWon: false,
+        canStay: false,
+      }));
+    }
+  }, [cardDealerImages.length, cardPlayerImages.length]);
 
   function newGame() {
     localStorage.setItem("dealerWallet", 1000);
@@ -576,7 +578,7 @@ export function BlackJack() {
             <Spacer margin={32} />
 
             <CardsWrapper>
-              {gameState.isPlayer && (
+              {gameState.playerWon && (
                 <>
                   <Text size={18} type="won">
                     {gameState.dealerWallet < 1
@@ -596,16 +598,6 @@ export function BlackJack() {
                 </>
               )}
 
-              {gameState.isDealer && (
-                <>
-                  <Text size={18} type={"lost"}>
-                    {gameState.playerWallet < 1
-                      ? "Game over, you lost all your money!"
-                      : "You lost!"}
-                  </Text>
-                  <Spacer />
-                </>
-              )}
               {gameState.dealerWon && (
                 <>
                   <Text size={18} type={"lost"}>
@@ -639,7 +631,7 @@ export function BlackJack() {
                       Hit
                     </Button>
                   )}
-                  {gameState.canStay && (
+                  {!gameState.dealerWon && !gameState.playerWon && (
                     <Button
                       title="Stay"
                       textColor={colors.green}

@@ -142,7 +142,7 @@ export const Text = styled.h1`
         `;
       case "lost":
         return css`
-          color: #bb0e0e;
+          color: #000000;
         `;
       case "won":
         return css`
