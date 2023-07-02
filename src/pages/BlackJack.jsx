@@ -59,7 +59,6 @@ export function BlackJack() {
   });
 
   let playerSum = 0;
-
   let dealerAceCount = 0;
   let playerAceCount = 0;
 
@@ -269,7 +268,6 @@ export function BlackJack() {
       gameState.dealerSum < 21 &&
       gameState.dealerSum > gameState.playerSum
     ) {
-      console.log("true");
       return setGameState((prevState) => ({
         ...prevState,
         dealerWon: true,
@@ -369,7 +367,7 @@ export function BlackJack() {
         canHit: false,
       }));
     }
-  }, [playerSum, dealerSum, playerCard2, dealerCard]);
+  }, [playerSum, dealerSum, cardDealerImages.length, cardPlayerImages.length]);
 
   console.log("game stae", gameState);
 
@@ -635,8 +633,8 @@ export function BlackJack() {
                     <Button
                       title="Hit"
                       textColor={colors.green}
-                      marginL={16}
                       onClick={hit}
+                      marginR={16}
                     >
                       Hit
                     </Button>
@@ -645,8 +643,8 @@ export function BlackJack() {
                     <Button
                       title="Stay"
                       textColor={colors.green}
-                      marginL={16}
                       onClick={stay}
+                      marginR={24}
                     >
                       Stay
                     </Button>
@@ -657,7 +655,7 @@ export function BlackJack() {
               {isUserStartedGame() && (
                 <Button
                   title="Next game"
-                  marginL={48}
+                  marginL={gameState.canStay && 24}
                   onClick={nextGame}
                   textColor={colors.green}
                 >

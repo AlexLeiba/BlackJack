@@ -33,16 +33,18 @@ export function InfoModal({
   return (
     <Modal ariaHideApp={false} isOpen={isVisible} style={customStyles}>
       <IconsWrapper>
-        <IMG
-          style={{ height: "20px", cursor: "pointer" }}
-          src={cards.close}
-          onClick={() =>
-            handleGameState((prevState) => ({
-              ...prevState,
-              isModalVisible: false,
-            }))
-          }
-        />
+        {playerCards > 0 && (
+          <IMG
+            style={{ height: "20px", cursor: "pointer" }}
+            src={cards.close}
+            onClick={() =>
+              handleGameState((prevState) => ({
+                ...prevState,
+                isModalVisible: false,
+              }))
+            }
+          />
+        )}
       </IconsWrapper>
       <Text type={"blackjack"} size={25}>
         {playerCards > 0 ? "Blackjack" : " Welcome to Blackjack"}

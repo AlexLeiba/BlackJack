@@ -16,17 +16,15 @@ export const Container = styled.div`
 
 export const TableWrapper = styled.div`
   width: 600px;
-  height: 900px;
+  height: 90%;
   background-image: url(${cards.table});
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  margin: 0 100px;
   padding: 0 26px 0 26px;
 
-  /* offset-x | offset-y | blur-radius | color */
   box-shadow: 0 20px 55px black;
-  border-radius: 50px;
+  border-radius: 70px;
   position: relative;
 `;
 
@@ -53,6 +51,7 @@ export const SpaceBetween = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 `;
 
 export const IMG = styled.img`
@@ -85,6 +84,7 @@ export const Button = styled.button`
   width: ${({ xSize }) => (xSize ? `${xSize}px` : "100px")};
   height: ${({ ySize }) => (ySize ? `${ySize}px` : "40px")};
   margin-left: ${({ marginL }) => (marginL ? `${marginL}px` : 0)};
+  margin-right: ${({ marginR }) => (marginR ? `${marginR}px` : 0)};
   border-radius: ${({ isBet }) => (isBet ? "0px" : "10px")};
   border: ${({ isBet }) => (isBet ? "3px #ffffff solid" : "none")};
   color: ${({ textColor }) => (textColor ? textColor : "black")};
