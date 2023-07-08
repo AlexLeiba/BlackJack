@@ -459,6 +459,16 @@ export function BlackJack() {
     }));
   }, []);
 
+  function isGameFinished() {
+    if (isUserStartedGame()) {
+      if (gameState.playerWon || gameState.dealerWon || gameState.isDraw) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   return (
     <Container>
       <InfoModal
@@ -525,6 +535,7 @@ export function BlackJack() {
             />
 
             <Button
+              disabled={isGameFinished()}
               isBet
               xSize={100}
               ySize={44.4}
@@ -649,7 +660,7 @@ export function BlackJack() {
                 </>
               )}
 
-              {isUserStartedGame() && (
+              {isGameFinished() && (
                 <Button
                   title="Next game"
                   marginL={gameState.canStay && 24}
