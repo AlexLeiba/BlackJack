@@ -31,8 +31,6 @@ import {
 
 let cardState = [];
 let dealerCard = "";
-let playerCard1 = "";
-let playerCard2 = "";
 let deck = [];
 
 export function BlackJack() {
@@ -114,14 +112,14 @@ export function BlackJack() {
 
     //FIRST PLAYER CARD
     for (let index = 0; index < 1; index++) {
-      playerCard1 = cardState.pop();
+      const playerCard1 = cardState.pop();
 
       playerSum += getValue(playerCard1);
       playerAceCount += checkAce(playerCard1);
       deck.push(playerCard1);
       setCardPlayerImages((prev) => [...prev, playerCard1]);
 
-      playerCard2 = cardState.pop();
+      const playerCard2 = cardState.pop();
 
       playerSum += getValue(playerCard2);
       playerAceCount += checkAce(playerCard2);
