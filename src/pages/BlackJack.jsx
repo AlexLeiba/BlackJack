@@ -557,7 +557,7 @@ export function BlackJack() {
                 <WalletPlayerName>
                   <Text type="walletName" textColor={colors.green}>
                     {getUserName().length > 8
-                      ? getUserName().substring(0, 7) + `'s` + "..."
+                      ? getUserName().substring(0, 7) + `...`
                       : getUserName() + `'s`}{" "}
                     chips:
                   </Text>
