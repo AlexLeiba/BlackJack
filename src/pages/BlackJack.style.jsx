@@ -63,7 +63,13 @@ export const IMG = styled.img`
         `;
       case "cards":
         return css`
-          height: 100px;
+          @media (max-width: 768px) {
+            height: 80px;
+          }
+
+          @media (min-width: 768px) {
+            height: 100px;
+          }
           margin: 2px;
         `;
 
