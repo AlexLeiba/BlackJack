@@ -1,7 +1,7 @@
 
 ## Blackjack game simplified
 
-#Game url:  https://blackjack-simplified.netlify.app/
+## Game url:  https://blackjack-simplified.netlify.app/
 
 
 
