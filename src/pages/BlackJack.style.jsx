@@ -1,6 +1,10 @@
-import styled, { css } from "styled-components";
-import { cards } from "../assets/images";
-import { colors } from "../colors/colors";
+import styled, { css, keyframes } from 'styled-components';
+import { cards } from '../assets/images';
+import { colors } from '../colors/colors';
+import { responsiveBreakpoints } from '../consts/responsive';
+
+const MOBILE_BREAKPOINT_MAX = responsiveBreakpoints.mobile.breakpoints.max;
+const MOBILE_BREAKPOINT_MIN = responsiveBreakpoints.mobile.breakpoints.min;
 
 export const Container = styled.div`
   width: 100%;
@@ -21,16 +25,29 @@ export const TableWrapper = styled.div`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
-  padding: 0 26px 0 26px;
+  padding: 0 26px;
 
-  box-shadow: 0 20px 55px black;
-  border-radius: 70px;
+  border-radius: 100px;
+  box-shadow: 0 20px 55px 0 black;
   position: relative;
+
+  @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
+    width: 100%;
+    padding: 0 26px;
+    overflow-x: hidden;
+  }
+
+  @media (max-width: ${MOBILE_BREAKPOINT_MIN}px) {
+    width: 100%;
+    padding: 0 26px;
+    overflow-x: hidden;
+    border-radius: 50px;
+  }
 `;
 
 export const DealerWrapper = styled.div`
   width: 100%;
-  margin-top: 40px;
+  margin-top: 10px;
 `;
 
 export const PlayerWrapper = styled.div`
@@ -54,16 +71,39 @@ export const SpaceBetween = styled.div`
   margin-bottom: 10px;
 `;
 
+// Define the keyframe animation
+const impulseAnimation = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.5;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
 export const IMG = styled.img`
   ${({ type }) => {
     switch (type) {
-      case "chips":
+      case 'chips':
         return css`
           height: 68px;
+
+          &.impulse {
+            animation: ${impulseAnimation} 0.5s;
+          }
         `;
-      case "cards":
+      case 'cards':
         return css`
-          @media (max-width: 768px) {
+          &.impulse {
+            animation: ${impulseAnimation} 0.3s;
+          }
+          @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
             height: 80px;
           }
 
@@ -83,17 +123,17 @@ export const IMG = styled.img`
 
 export const BetContainer = styled.span`
   position: absolute;
-  top: calc(50% - 35px);
+  top: calc(51% - 35px);
 `;
 
 export const Button = styled.button`
-  width: ${({ xSize }) => (xSize ? `${xSize}px` : "100px")};
-  height: ${({ ySize }) => (ySize ? `${ySize}px` : "40px")};
+  width: ${({ xSize }) => (xSize ? `${xSize}px` : '100px')};
+  height: ${({ ySize }) => (ySize ? `${ySize}px` : '40px')};
   margin-left: ${({ marginL }) => (marginL ? `${marginL}px` : 0)};
   margin-right: ${({ marginR }) => (marginR ? `${marginR}px` : 0)};
-  border-radius: ${({ isBet }) => (isBet ? "0px" : "10px")};
-  border: ${({ isBet }) => (isBet ? "3px #ffffff solid" : "none")};
-  color: ${({ textColor }) => (textColor ? textColor : "black")};
+  border-radius: ${({ isBet }) => (isBet ? '0px' : '10px')};
+  border: ${({ isBet }) => (isBet ? '3px #ffffff solid' : 'none')};
+  color: ${({ textColor }) => (textColor ? textColor : 'black')};
   background-color: ${({ bgColor }) => bgColor && bgColor};
   font-size: 17px;
   cursor: pointer;
@@ -113,7 +153,7 @@ export const Button = styled.button`
   }}
 
   &:hover {
-    color: ${({ disabled }) => !disabled && "#000000"};
+    color: ${({ disabled }) => !disabled && '#000000'};
     opacity: 0.6;
   }
 `;
@@ -129,40 +169,44 @@ export const Input = styled.input`
   color: ${colors.white};
   padding-left: 24px;
   font-size: 17px;
+
+  @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
+    width: 50px;
+  }
 `;
 
 export const Text = styled.h1`
   display: block;
-  font-size: ${({ size }) => (size ? `${size}px` : "13px")};
-  text-align: ${({ align }) => (align ? align : "center")};
+  font-size: ${({ size }) => (size ? `${size}px` : '13px')};
+  text-align: ${({ align }) => (align ? align : 'center')};
   margin: 0;
   ${({ type }) => {
     switch (type) {
-      case "player":
+      case 'player':
         return css`
           color: white;
         `;
-      case "dealer":
+      case 'dealer':
         return css`
           color: white;
         `;
-      case "lost":
+      case 'lost':
         return css`
-          color: #000000;
+          color: #f3f310;
         `;
-      case "won":
+      case 'won':
         return css`
           color: #0ff67f;
         `;
-      case "modal":
+      case 'modal':
         return css`
           color: ${colors.green};
         `;
-      case "walletName":
+      case 'walletName':
         return css`
           color: ${colors.green};
         `;
-      case "walletChips":
+      case 'walletChips':
         return css`
           color: ${colors.white};
           font-weight: 400;
@@ -176,9 +220,7 @@ export const Text = styled.h1`
   }};
 `;
 
-export const CardsWrapper = styled.div`
-  margin-bottom: 20px;
-`;
+export const CardsWrapper = styled.div``;
 
 export const ImageWrapper = styled.div`
   width: 30px;

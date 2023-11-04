@@ -1,11 +1,11 @@
-import React from "react";
-import Modal from "react-modal";
-import { Button, IMG, SpaceBetween, Text } from "../pages/BlackJack.style";
-import { IconsWrapper, Input, InputWrapper } from "./Input.style";
-import { cards } from "../assets/images";
-import { colors } from "../colors/colors";
-import { Spacer } from "./Spacer";
-import { Container } from "./InfoModal.style";
+import React from 'react';
+import Modal from 'react-modal';
+import { Button, IMG, SpaceBetween, Text } from '../pages/BlackJack.style';
+import { IconsWrapper, Input, InputWrapper } from './Input.style';
+import { cards } from '../assets/images';
+import { colors } from '../colors/colors';
+import { Spacer } from './Spacer';
+import { Container } from './InfoModal.style';
 
 export function InfoModal({
   isVisible,
@@ -18,15 +18,15 @@ export function InfoModal({
 }) {
   const customStyles = {
     content: {
-      width: "400px",
-      height: "325px",
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      transform: "translate(-50%, -50%)",
-      overflow: "hidden",
-      borderRadius: "30px",
+      width: '400px',
+      height: '325px',
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      transform: 'translate(-50%, -50%)',
+      overflow: 'hidden',
+      borderRadius: '30px',
     },
   };
 
@@ -35,7 +35,10 @@ export function InfoModal({
       <IconsWrapper>
         {playerCards > 0 && (
           <IMG
-            style={{ height: "20px", cursor: "pointer" }}
+            style={{
+              height: '20px',
+              cursor: 'pointer',
+            }}
             src={cards.close}
             onClick={() =>
               handleGameState((prevState) => ({
@@ -46,22 +49,22 @@ export function InfoModal({
           />
         )}
       </IconsWrapper>
-      <Text type={"blackjack"} size={25}>
-        {playerCards > 0 ? "Blackjack" : " Welcome to Blackjack"}
+      <Text type={'blackjack'} size={25}>
+        {playerCards > 0 ? 'Blackjack' : ' Welcome to Blackjack'}
       </Text>
 
-      <Text type={"modal"} size={20}>
+      <Text type={'modal'} size={20}>
         If you want to start a new game please introduce your name!
       </Text>
 
       <Container>
         <InputWrapper>
-          <Text type={"modal"} align="left">
+          <Text type={'modal'} align='left'>
             Name
           </Text>
           <Input
-            type="string"
-            title="Name"
+            type='string'
+            title='Name'
             value={gameState.userName}
             onChange={(e) =>
               handleGameState((prevValue) => ({
@@ -73,10 +76,10 @@ export function InfoModal({
         </InputWrapper>
 
         <IconsWrapper>
-          <IMG style={{ height: "20px" }} src={cards.vector2} />
-          <IMG style={{ height: "20px" }} src={cards.vector1} />
-          <IMG style={{ height: "20px" }} src={cards.vector4} />
-          <IMG style={{ height: "20px" }} src={cards.vector3} />
+          <IMG style={{ height: '20px' }} src={cards.vector2} />
+          <IMG style={{ height: '20px' }} src={cards.vector1} />
+          <IMG style={{ height: '20px' }} src={cards.vector4} />
+          <IMG style={{ height: '20px' }} src={cards.vector3} />
         </IconsWrapper>
 
         <Spacer margin={40} />
