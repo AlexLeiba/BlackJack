@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import { Button, IMG, SpaceBetween, Text } from '../pages/BlackJack.style';
 import { IconsWrapper, Input, InputWrapper } from './Input.style';
@@ -6,6 +6,9 @@ import { cards } from '../assets/images';
 import { colors } from '../colors/colors';
 import { Spacer } from './Spacer';
 import { Container } from './InfoModal.style';
+import { responsiveBreakpoints } from '../consts/responsive';
+
+const MOBILE_BREAKPOINT_MAX = responsiveBreakpoints.mobile.breakpoints.max;
 
 export function InfoModal({
   isVisible,
@@ -16,9 +19,23 @@ export function InfoModal({
   nextGame,
   playerCards,
 }) {
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
   const customStyles = {
     content: {
-      width: '400px',
+      minWidth: '300px',
+      width: screenWidth < MOBILE_BREAKPOINT_MAX ? '300px' : '400px',
       height: '325px',
       top: '50%',
       left: '50%',
@@ -50,11 +67,12 @@ export function InfoModal({
         )}
       </IconsWrapper>
       <Text type={'blackjack'} size={25}>
-        {playerCards > 0 ? 'Blackjack' : ' Welcome to Blackjack'}
+        {playerCards > 0 ? 'BlackJack' : 'Welcome to Blackjack'}
       </Text>
 
-      <Text type={'modal'} size={20}>
-        If you want to start a new game please introduce your name!
+      <Text type={'modal'} size={15}>
+        If you want to start a new game please introduce your name, in case you
+        already played this game just click on continue, good luck!
       </Text>
 
       <Container>

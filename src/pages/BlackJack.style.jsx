@@ -138,6 +138,10 @@ export const Button = styled.button`
   font-size: 17px;
   cursor: pointer;
 
+  @media (max-width: ${MOBILE_BREAKPOINT_MIN}px) {
+    font-size: 12px;
+  }
+
   ${({ isBet }) => {
     switch (isBet) {
       case isBet === true:

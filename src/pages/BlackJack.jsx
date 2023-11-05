@@ -28,7 +28,7 @@ import {
   WalletPlayerName,
   WalletWrapper,
 } from '../components/Wallets';
-import { Button as Button2 } from '../components/Button/Button';
+import { Button as RaiseButton } from '../components/Button/Button';
 import { Flex } from '../components/Flex/Flex.style';
 
 let cardState = [];
@@ -558,7 +558,7 @@ export function BlackJack() {
                 onChange={(e) => handleBet(e.target.value)}
               />
 
-              <Button2
+              <RaiseButton
                 disabled={isGameFinished()}
                 isBet
                 onClick={handleApplyBet}
@@ -566,7 +566,7 @@ export function BlackJack() {
                 textColor={!gameState.bet ? colors.red : colors.green}
               >
                 {'Raise'}
-              </Button2>
+              </RaiseButton>
             </Flex>
           </BetContainer>
 
