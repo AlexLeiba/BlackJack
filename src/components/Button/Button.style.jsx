@@ -38,5 +38,6 @@ export const ButtonContainer = styled.div`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 50px;
+    height: 30px;
   }
 `;

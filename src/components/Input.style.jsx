@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { colors } from "../colors/colors";
+import styled from 'styled-components';
+import { colors } from '../colors/colors';
 
 export const Input = styled.input`
   width: 150px;
@@ -13,9 +13,13 @@ export const Input = styled.input`
 `;
 
 export const InputWrapper = styled.div`
-  width: 150px;
+  width: 100%;
   margin-bottom: 20px;
   margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 `;
 
 export const IconsWrapper = styled.div`

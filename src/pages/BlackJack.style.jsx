@@ -34,7 +34,9 @@ export const TableWrapper = styled.div`
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 100%;
     padding: 0 26px;
-    overflow-x: hidden;
+    overflow: hidden;
+    height: 85%;
+    margin-bottom: 80px;
   }
 
   @media (max-width: ${MOBILE_BREAKPOINT_MIN}px) {
@@ -68,10 +70,9 @@ export const SpaceBetween = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  margin: 5px;
 `;
 
-// Define the keyframe animation
 const impulseAnimation = keyframes`
   0% {
     transform: scale(1);
@@ -104,13 +105,19 @@ export const IMG = styled.img`
             animation: ${impulseAnimation} 0.3s;
           }
           @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
-            height: 80px;
+            height: 70px;
           }
 
           @media (min-width: 768px) {
             height: 100px;
           }
           margin: 2px;
+        `;
+
+      case 'closeModal':
+        return css`
+          height: 20px;
+          cursor: pointer;
         `;
 
       default:
@@ -123,7 +130,7 @@ export const IMG = styled.img`
 
 export const BetContainer = styled.span`
   position: absolute;
-  top: calc(51% - 35px);
+  top: calc(50% - 35px);
 `;
 
 export const Button = styled.button`
@@ -140,6 +147,20 @@ export const Button = styled.button`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MIN}px) {
     font-size: 12px;
+
+    ${({ type }) => {
+      switch (type) {
+        case 'newGame':
+          return css`
+            width: 70px;
+          `;
+
+          break;
+
+        default:
+          break;
+      }
+    }}
   }
 
   ${({ isBet }) => {
@@ -164,18 +185,19 @@ export const Button = styled.button`
 
 export const Input = styled.input`
   width: 76px;
-  height: 38px;
   border-top-left-radius: 16px;
   border-bottom-left-radius: 16px;
-  border: 3px #ffffff solid;
+  border: 3px ${colors.white} solid;
   outline: none;
   background-color: transparent;
   color: ${colors.white};
-  padding-left: 24px;
   font-size: 17px;
+  padding: 10px 0px 10px 24px;
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 50px;
+    height: 30px;
+    padding: 0 0 0 24px;
   }
 `;
 
@@ -209,11 +231,19 @@ export const Text = styled.h1`
       case 'walletName':
         return css`
           color: ${colors.green};
+
+          @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
+            font-size: 10px;
+          }
         `;
       case 'walletChips':
         return css`
           color: ${colors.white};
           font-weight: 400;
+
+          @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
+            font-size: 12px;
+          }
         `;
 
       default:
@@ -242,4 +272,10 @@ export const BetValueWrapper = styled.div`
   position: absolute;
   top: 28px;
   left: 17px;
+`;
+
+export const RaiseBetContainer = styled.div`
+  height: 35px;
+  display: flex;
+  align-items: center;
 `;

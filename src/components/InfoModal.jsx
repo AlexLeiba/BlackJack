@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
-import { Button, IMG, SpaceBetween, Text } from '../pages/BlackJack.style';
+import { Button, IMG, Text } from '../pages/BlackJack.style';
 import { IconsWrapper, Input, InputWrapper } from './Input.style';
 import { cards } from '../assets/images';
 import { colors } from '../colors/colors';
 import { Spacer } from './Spacer';
 import { Container } from './InfoModal.style';
 import { responsiveBreakpoints } from '../consts/responsive';
+import { Flex } from './Flex/Flex.style';
 
 const MOBILE_BREAKPOINT_MAX = responsiveBreakpoints.mobile.breakpoints.max;
 
@@ -36,7 +37,7 @@ export function InfoModal({
     content: {
       minWidth: '300px',
       width: screenWidth < MOBILE_BREAKPOINT_MAX ? '300px' : '400px',
-      height: '325px',
+      height: '350px',
       top: '50%',
       left: '50%',
       right: 'auto',
@@ -52,10 +53,7 @@ export function InfoModal({
       <IconsWrapper>
         {playerCards > 0 && (
           <IMG
-            style={{
-              height: '20px',
-              cursor: 'pointer',
-            }}
+            type='closeModal'
             src={cards.close}
             onClick={() =>
               handleGameState((prevState) => ({
@@ -74,25 +72,25 @@ export function InfoModal({
         If you want to start a new game please introduce your name, in case you
         already played this game just click on continue, good luck!
       </Text>
-
-      <Container>
-        <InputWrapper>
-          <Text type={'modal'} align='left'>
+      <InputWrapper>
+        <Flex>
+          <Text type={'modal'} size={15} align='left'>
             Name
           </Text>
-          <Input
-            type='string'
-            title='Name'
-            value={gameState.userName}
-            onChange={(e) =>
-              handleGameState((prevValue) => ({
-                ...prevValue,
-                userName: e.target.value,
-              }))
-            }
-          />
-        </InputWrapper>
-
+        </Flex>
+        <Input
+          type='string'
+          title='Name'
+          value={gameState.userName}
+          onChange={(e) =>
+            handleGameState((prevValue) => ({
+              ...prevValue,
+              userName: e.target.value,
+            }))
+          }
+        />
+      </InputWrapper>
+      <Container>
         <IconsWrapper>
           <IMG style={{ height: '20px' }} src={cards.vector2} />
           <IMG style={{ height: '20px' }} src={cards.vector1} />
@@ -102,7 +100,7 @@ export function InfoModal({
 
         <Spacer margin={40} />
 
-        <SpaceBetween>
+        <Flex flexGap={10}>
           <Button
             disabled={gameState.userName.length < 1}
             textColor={colors.white}
@@ -116,7 +114,6 @@ export function InfoModal({
 
           {canContinue && (
             <Button
-              marginL={16}
               textColor={colors.white}
               onClick={() =>
                 playerCards > 0
@@ -131,7 +128,7 @@ export function InfoModal({
               Continue
             </Button>
           )}
-        </SpaceBetween>
+        </Flex>
       </Container>
     </Modal>
   );

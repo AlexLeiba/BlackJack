@@ -30,6 +30,7 @@ export const WalletDealerName = styled.div`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 70px;
+    height: 30px;
   }
 `;
 
@@ -49,6 +50,7 @@ export const WalletDealerCoins = styled.div`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 70px;
+    height: 30px;
   }
 `;
 
@@ -71,6 +73,7 @@ export const WalletPlayerName = styled.div`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 70px;
+    height: 30px;
   }
 `;
 
@@ -89,6 +92,7 @@ export const WalletPlayerCoins = styled.div`
 
   @media (max-width: ${MOBILE_BREAKPOINT_MAX}px) {
     width: 70px;
+    height: 30px;
   }
 `;
 

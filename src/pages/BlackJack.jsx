@@ -531,26 +531,25 @@ export function BlackJack() {
           </DealerWrapper>
 
           <BetContainer>
-            <div>
-              <ImageWrapper>
-                <IMG
-                  className={gameState.raised ? 'impulse' : ''}
-                  isRaised={gameState}
-                  type='chips'
-                  src={cards.chips}
-                  alt='chips'
-                />
-                <BetValueWrapper>
-                  <Text size={12} align='left' type='player'>
-                    $
-                    {gameState.bet.length > 4
-                      ? gameState.bet.substring(0, 3) + '...'
-                      : gameState.bet}
-                  </Text>
-                </BetValueWrapper>
-              </ImageWrapper>
-            </div>
-            <Flex>
+            <ImageWrapper>
+              <IMG
+                className={gameState.raised ? 'impulse' : ''}
+                isRaised={gameState}
+                type='chips'
+                src={cards.chips}
+                alt='chips'
+              />
+              <BetValueWrapper>
+                <Text size={12} align='left' type='player'>
+                  $
+                  {gameState.bet.length > 4
+                    ? gameState.bet.substring(0, 3) + '...'
+                    : gameState.bet}
+                </Text>
+              </BetValueWrapper>
+            </ImageWrapper>
+
+            <Flex alignItems='center'>
               <Input
                 type='number'
                 title='bet'
@@ -608,11 +607,14 @@ export function BlackJack() {
           </WalletsWrapper>
 
           <PlayerWrapper>
-            {cardPlayerImages.length > 0 && (
-              <Text size={25} type='player'>
-                {getUserName()}
-              </Text>
-            )}
+            {cardPlayerImages.length > 0 &&
+              !gameState.playerWon &&
+              !gameState.isDraw &&
+              !gameState.dealerWon && (
+                <Text size={25} type='player'>
+                  {getUserName()}
+                </Text>
+              )}
             <Spacer margin={10} />
 
             <CardsWrapper>
@@ -699,6 +701,7 @@ export function BlackJack() {
                 </Button>
               )}
               <Button
+                type='newGame'
                 title='New game'
                 marginL={16}
                 textColor={colors.white}
