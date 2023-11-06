@@ -1,7 +1,7 @@
-import styled, { css, keyframes } from 'styled-components';
-import { cards } from '../assets/images';
-import { colors } from '../colors/colors';
-import { responsiveBreakpoints } from '../consts/responsive';
+import styled, { css, keyframes } from "styled-components";
+import { cards } from "../assets/images";
+import { colors } from "../colors/colors";
+import { responsiveBreakpoints } from "../consts/responsive";
 
 const MOBILE_BREAKPOINT_MAX = responsiveBreakpoints.mobile.breakpoints.max;
 const MOBILE_BREAKPOINT_MIN = responsiveBreakpoints.mobile.breakpoints.min;
@@ -71,6 +71,7 @@ export const SpaceBetween = styled.div`
   justify-content: center;
   align-items: center;
   margin: 5px;
+  gap: 10px;
 `;
 
 const impulseAnimation = keyframes`
@@ -91,7 +92,7 @@ const impulseAnimation = keyframes`
 export const IMG = styled.img`
   ${({ type }) => {
     switch (type) {
-      case 'chips':
+      case "chips":
         return css`
           height: 68px;
 
@@ -99,7 +100,7 @@ export const IMG = styled.img`
             animation: ${impulseAnimation} 0.5s;
           }
         `;
-      case 'cards':
+      case "cards":
         return css`
           &.impulse {
             animation: ${impulseAnimation} 0.3s;
@@ -114,7 +115,7 @@ export const IMG = styled.img`
           margin: 2px;
         `;
 
-      case 'closeModal':
+      case "closeModal":
         return css`
           height: 20px;
           cursor: pointer;
@@ -134,13 +135,13 @@ export const BetContainer = styled.span`
 `;
 
 export const Button = styled.button`
-  width: ${({ xSize }) => (xSize ? `${xSize}px` : '100px')};
-  height: ${({ ySize }) => (ySize ? `${ySize}px` : '40px')};
+  width: ${({ xSize }) => (xSize ? `${xSize}px` : "100px")};
+  height: ${({ ySize }) => (ySize ? `${ySize}px` : "40px")};
   margin-left: ${({ marginL }) => (marginL ? `${marginL}px` : 0)};
   margin-right: ${({ marginR }) => (marginR ? `${marginR}px` : 0)};
-  border-radius: ${({ isBet }) => (isBet ? '0px' : '10px')};
-  border: ${({ isBet }) => (isBet ? '3px #ffffff solid' : 'none')};
-  color: ${({ textColor }) => (textColor ? textColor : 'black')};
+  border-radius: ${({ isBet }) => (isBet ? "0px" : "10px")};
+  border: ${({ isBet }) => (isBet ? "3px #ffffff solid" : "none")};
+  color: ${({ textColor }) => (textColor ? textColor : "black")};
   background-color: ${({ bgColor }) => bgColor && bgColor};
   font-size: 17px;
   cursor: pointer;
@@ -150,7 +151,7 @@ export const Button = styled.button`
 
     ${({ type }) => {
       switch (type) {
-        case 'newGame':
+        case "newGame":
           return css`
             width: 70px;
           `;
@@ -178,7 +179,7 @@ export const Button = styled.button`
   }}
 
   &:hover {
-    color: ${({ disabled }) => !disabled && '#000000'};
+    color: ${({ disabled }) => !disabled && "#000000"};
     opacity: 0.6;
   }
 `;
@@ -203,32 +204,32 @@ export const Input = styled.input`
 
 export const Text = styled.h1`
   display: block;
-  font-size: ${({ size }) => (size ? `${size}px` : '13px')};
-  text-align: ${({ align }) => (align ? align : 'center')};
+  font-size: ${({ size }) => (size ? `${size}px` : "13px")};
+  text-align: ${({ align }) => (align ? align : "center")};
   margin: 0;
   ${({ type }) => {
     switch (type) {
-      case 'player':
+      case "player":
         return css`
           color: white;
         `;
-      case 'dealer':
+      case "dealer":
         return css`
           color: white;
         `;
-      case 'lost':
+      case "lost":
         return css`
           color: #f3f310;
         `;
-      case 'won':
+      case "won":
         return css`
           color: #0ff67f;
         `;
-      case 'modal':
+      case "modal":
         return css`
           color: ${colors.green};
         `;
-      case 'walletName':
+      case "walletName":
         return css`
           color: ${colors.green};
 
@@ -236,7 +237,7 @@ export const Text = styled.h1`
             font-size: 10px;
           }
         `;
-      case 'walletChips':
+      case "walletChips":
         return css`
           color: ${colors.white};
           font-weight: 400;

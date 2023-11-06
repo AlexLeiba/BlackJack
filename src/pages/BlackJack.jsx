@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Container,
   DealerWrapper,
@@ -15,11 +15,11 @@ import {
   BetContainer,
   WalletsWrapper,
   BetValueWrapper,
-} from './BlackJack.style';
-import { cards } from '../assets/images';
-import { InfoModal } from '../components/InfoModal';
-import { Spacer } from '../components/Spacer';
-import { colors } from '../colors/colors';
+} from "./BlackJack.style";
+import { cards } from "../assets/images";
+import { InfoModal } from "../components/InfoModal";
+import { Spacer } from "../components/Spacer";
+import { colors } from "../colors/colors";
 import {
   WalletContainer,
   WalletDealerCoins,
@@ -27,12 +27,12 @@ import {
   WalletPlayerCoins,
   WalletPlayerName,
   WalletWrapper,
-} from '../components/Wallets';
-import { Button as RaiseButton } from '../components/Button/Button';
-import { Flex } from '../components/Flex/Flex.style';
+} from "../components/Wallets";
+import { Button as RaiseButton } from "../components/Button/Button";
+import { Flex } from "../components/Flex/Flex.style";
 
 let cardState = [];
-let dealerCard = '';
+let dealerCard = "";
 let deck = [];
 
 export function BlackJack() {
@@ -52,7 +52,7 @@ export function BlackJack() {
     playerWallet: 0,
     betQuantity: 100,
     bet: 100,
-    userName: '',
+    userName: "",
     isModalVisible: false,
     raised: false,
   });
@@ -63,12 +63,12 @@ export function BlackJack() {
 
   function buildDeck() {
     cardState = [];
-    let cardTypes = ['C', 'D', 'H', 'S'];
-    let cardValues = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K'];
+    let cardTypes = ["C", "D", "H", "S"];
+    let cardValues = ["A", 2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K"];
 
     for (let indexTypes = 0; indexTypes < cardTypes.length; indexTypes++) {
       for (let valueIndex = 0; valueIndex < cardValues.length; valueIndex++) {
-        cardState.push(cardValues[valueIndex] + '-' + cardTypes[indexTypes]);
+        cardState.push(cardValues[valueIndex] + "-" + cardTypes[indexTypes]);
       }
     }
   }
@@ -86,12 +86,12 @@ export function BlackJack() {
   }
 
   function getValue(newCard) {
-    let data = newCard.split('-');
+    let data = newCard.split("-");
 
     let value = data[0];
 
     if (isNaN(value)) {
-      if (value === 'A') {
+      if (value === "A") {
         return 11;
       }
       return 10;
@@ -103,9 +103,9 @@ export function BlackJack() {
   let dealerSum = 0;
 
   function startGame() {
-    const dealerWallet = localStorage.getItem('dealerWallet');
-    const playerWallet = localStorage.getItem('playerWallet');
-    const playerName = localStorage.getItem('playerName');
+    const dealerWallet = localStorage.getItem("dealerWallet");
+    const playerWallet = localStorage.getItem("playerWallet");
+    const playerName = localStorage.getItem("playerName");
 
     //FIRST DEALER CARD
     dealerCard = cardState.pop();
@@ -152,7 +152,7 @@ export function BlackJack() {
 
   function hit() {
     if (!gameState.bet) {
-      return alert('Please make your BET before to HIT!');
+      return alert("Please make your BET before to HIT!");
     }
     if (!gameState.canHit) {
       return;
@@ -185,7 +185,7 @@ export function BlackJack() {
 
   function stay() {
     if (!gameState.bet) {
-      return alert('Please make your BET before to STAY!');
+      return alert("Please make your BET before to STAY!");
     }
 
     dealerCard = cardState.pop();
@@ -240,7 +240,7 @@ export function BlackJack() {
     return gameState.dealerSum;
   }
   function checkAce(card) {
-    if (card[0] === 'A') {
+    if (card[0] === "A") {
       return 1;
     }
     return 0;
@@ -249,12 +249,12 @@ export function BlackJack() {
   function handleApplyBet() {
     if (gameState.betQuantity > gameState.playerWallet) {
       alert(
-        'You do not have enough money in your wallet, try to make a smaller BET or start a new game!'
+        "You do not have enough money in your wallet, try to make a smaller BET or start a new game!"
       );
     } else if (gameState.betQuantity < 1) {
-      alert('Your bet should be higher than $0 !');
+      alert("Your bet should be higher than $0 !");
     } else if (gameState.dealerWallet < gameState.betQuantity) {
-      alert('Dealer do not has enough money, make a smaller bet please !');
+      alert("Dealer do not has enough money, make a smaller bet please !");
     } else {
       setGameState((prevValue) => ({
         ...prevValue,
@@ -282,16 +282,16 @@ export function BlackJack() {
       }));
     }, [500]);
 
-    const playerWallet = localStorage.getItem('playerWallet');
-    const dealerWallet = localStorage.getItem('dealerWallet');
+    const playerWallet = localStorage.getItem("playerWallet");
+    const dealerWallet = localStorage.getItem("dealerWallet");
     if (gameState.dealerSum === 21 || gameState.playerSum > 21) {
       const newWalletPlayerValue =
         parseInt(playerWallet) - parseInt(gameState.bet);
       const newWalletDealerValue =
         parseInt(dealerWallet) + parseInt(gameState.bet);
 
-      localStorage.setItem('playerWallet', newWalletPlayerValue);
-      localStorage.setItem('dealerWallet', newWalletDealerValue);
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
 
       return setGameState((prevValue) => ({
         ...prevValue,
@@ -310,8 +310,8 @@ export function BlackJack() {
       const newWalletDealerValue =
         parseInt(dealerWallet) - Number(gameState.bet);
 
-      localStorage.setItem('playerWallet', newWalletPlayerValue);
-      localStorage.setItem('dealerWallet', newWalletDealerValue);
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
 
       return setGameState((prevValue) => ({
         ...prevValue,
@@ -334,8 +334,8 @@ export function BlackJack() {
       const newWalletDealerValue =
         parseInt(dealerWallet) - Number(gameState.bet);
 
-      localStorage.setItem('playerWallet', newWalletPlayerValue);
-      localStorage.setItem('dealerWallet', newWalletDealerValue);
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
 
       return setGameState((prevState) => ({
         ...prevState,
@@ -357,8 +357,8 @@ export function BlackJack() {
       const newWalletDealerValue =
         parseInt(dealerWallet) + parseInt(gameState.bet);
 
-      localStorage.setItem('playerWallet', newWalletPlayerValue);
-      localStorage.setItem('dealerWallet', newWalletDealerValue);
+      localStorage.setItem("playerWallet", newWalletPlayerValue);
+      localStorage.setItem("dealerWallet", newWalletDealerValue);
 
       return setGameState((prevState) => ({
         ...prevState,
@@ -390,9 +390,9 @@ export function BlackJack() {
   ]);
 
   function newGame() {
-    localStorage.setItem('dealerWallet', 1000);
-    localStorage.setItem('playerWallet', 1000);
-    localStorage.setItem('playerName', gameState.userName);
+    localStorage.setItem("dealerWallet", 1000);
+    localStorage.setItem("playerWallet", 1000);
+    localStorage.setItem("playerName", gameState.userName);
     setGameState({
       dealerSum: 0,
       playerSum: 0,
@@ -436,14 +436,14 @@ export function BlackJack() {
   }
 
   function isUserStartedGame() {
-    const userChips = localStorage.getItem('playerWallet');
-    const dealerChips = localStorage.getItem('dealerWallet');
+    const userChips = localStorage.getItem("playerWallet");
+    const dealerChips = localStorage.getItem("dealerWallet");
 
     if (
       !userChips ||
-      userChips === '0' ||
+      userChips === "0" ||
       !dealerChips ||
-      dealerChips === '0'
+      dealerChips === "0"
     ) {
       return false;
     } else {
@@ -452,12 +452,12 @@ export function BlackJack() {
   }
 
   function getUserName() {
-    const userName = localStorage.getItem('playerName');
+    const userName = localStorage.getItem("playerName");
 
     if (userName) {
       return userName;
     } else {
-      return '';
+      return "";
     }
   }
 
@@ -502,28 +502,28 @@ export function BlackJack() {
           <DealerWrapper>
             {cardDealerImages.length > 0 ? (
               <>
-                <Text type='dealer' size={25}>
+                <Text type="dealer" size={25}>
                   Dealer
                 </Text>
                 <Spacer margin={10} />
               </>
             ) : (
-              <Text size={25} type='player'>
+              <Text size={25} type="player">
                 Welcome to Blackjack
               </Text>
             )}
 
             {cardDealerImages.length === 1 && (
-              <IMG type='cards' src={cards.back} alt='card' />
+              <IMG type="cards" src={cards.back} alt="card" />
             )}
 
             {cardDealerImages.map((data, index) => {
               return (
                 <IMG
-                  className={cardDealerImages.length ? 'impulse' : ''}
-                  type='cards'
+                  className={cardDealerImages.length ? "impulse" : ""}
+                  type="cards"
                   src={cards[data]}
-                  alt='card'
+                  alt="card"
                   key={index}
                 />
               );
@@ -533,26 +533,26 @@ export function BlackJack() {
           <BetContainer>
             <ImageWrapper>
               <IMG
-                className={gameState.raised ? 'impulse' : ''}
+                className={gameState.raised ? "impulse" : ""}
                 isRaised={gameState}
-                type='chips'
+                type="chips"
                 src={cards.chips}
-                alt='chips'
+                alt="chips"
               />
               <BetValueWrapper>
-                <Text size={12} align='left' type='player'>
+                <Text size={12} align="left" type="player">
                   $
                   {gameState.bet.length > 4
-                    ? gameState.bet.substring(0, 3) + '...'
+                    ? gameState.bet.substring(0, 3) + "..."
                     : gameState.bet}
                 </Text>
               </BetValueWrapper>
             </ImageWrapper>
 
-            <Flex alignItems='center'>
+            <Flex alignItems="center">
               <Input
-                type='number'
-                title='bet'
+                type="number"
+                title="bet"
                 value={gameState.betQuantity}
                 onChange={(e) => handleBet(e.target.value)}
               />
@@ -564,7 +564,7 @@ export function BlackJack() {
                 bgColor={colors.white}
                 textColor={!gameState.bet ? colors.red : colors.green}
               >
-                {'Raise'}
+                {"Raise"}
               </RaiseButton>
             </Flex>
           </BetContainer>
@@ -573,13 +573,13 @@ export function BlackJack() {
             <WalletContainer>
               <WalletWrapper>
                 <WalletDealerName>
-                  <Text type='walletName'>Dealer's chips:</Text>
+                  <Text type="walletName">Dealer's chips:</Text>
                 </WalletDealerName>
                 <WalletDealerCoins>
-                  <Text size={17} type='walletChips' textColor={colors.white}>
-                    $ {''}
+                  <Text size={17} type="walletChips" textColor={colors.white}>
+                    $ {""}
                     {gameState.dealerWallet.length > 6
-                      ? gameState.dealerWallet.substring(0, 6) + '...'
+                      ? gameState.dealerWallet.substring(0, 6) + "..."
                       : gameState.dealerWallet}
                   </Text>
                 </WalletDealerCoins>
@@ -587,18 +587,18 @@ export function BlackJack() {
 
               <WalletWrapper>
                 <WalletPlayerName>
-                  <Text type='walletName' textColor={colors.green}>
+                  <Text type="walletName" textColor={colors.green}>
                     {getUserName().length > 9
                       ? getUserName().substring(0, 9) + `...`
-                      : getUserName() + `'s`}{' '}
+                      : getUserName() + `'s`}{" "}
                     chips:
                   </Text>
                 </WalletPlayerName>
                 <WalletPlayerCoins>
-                  <Text size={17} type='walletChips' textColor={colors.white}>
-                    $ {''}
+                  <Text size={17} type="walletChips" textColor={colors.white}>
+                    $ {""}
                     {gameState.playerWallet.length > 6
-                      ? gameState.playerWallet.substring(0, 6) + '...'
+                      ? gameState.playerWallet.substring(0, 6) + "..."
                       : gameState.playerWallet}
                   </Text>
                 </WalletPlayerCoins>
@@ -611,7 +611,7 @@ export function BlackJack() {
               !gameState.playerWon &&
               !gameState.isDraw &&
               !gameState.dealerWon && (
-                <Text size={25} type='player'>
+                <Text size={25} type="player">
                   {getUserName()}
                 </Text>
               )}
@@ -620,10 +620,10 @@ export function BlackJack() {
             <CardsWrapper>
               {gameState.playerWon && (
                 <>
-                  <Text size={18} type='won'>
+                  <Text size={18} type="won">
                     {gameState.dealerWallet < 1
                       ? "You Won all dealer's money Congrats!"
-                      : 'You Won!'}
+                      : "You Won!"}
                   </Text>
                   <Spacer />
                 </>
@@ -631,7 +631,7 @@ export function BlackJack() {
 
               {gameState.isDraw && (
                 <>
-                  <Text size={18} type='won'>
+                  <Text size={18} type="won">
                     Draw!
                   </Text>
                   <Spacer />
@@ -640,10 +640,10 @@ export function BlackJack() {
 
               {gameState.dealerWon && (
                 <>
-                  <Text size={18} type={'lost'}>
+                  <Text size={18} type={"lost"}>
                     {gameState.playerWallet < 1
-                      ? 'Game over, you lost all your money!'
-                      : 'Dealer Won! :('}
+                      ? "Game over, you lost all your money!"
+                      : "Dealer Won! :("}
                   </Text>
                   <Spacer />
                 </>
@@ -652,10 +652,10 @@ export function BlackJack() {
               {cardPlayerImages.map((data, index) => {
                 return (
                   <IMG
-                    className={cardPlayerImages.length ? 'impulse' : ''}
-                    type='cards'
+                    className={cardPlayerImages.length ? "impulse" : ""}
+                    type="cards"
                     src={cards[data]}
-                    alt='card'
+                    alt="card"
                     key={index}
                   />
                 );
@@ -668,21 +668,15 @@ export function BlackJack() {
               {cardPlayerImages.length > 0 && (
                 <>
                   {gameState.canHit && (
-                    <Button
-                      title='Hit'
-                      textColor={colors.green}
-                      onClick={hit}
-                      marginR={16}
-                    >
+                    <Button title="Hit" textColor={colors.green} onClick={hit}>
                       Hit
                     </Button>
                   )}
                   {!gameState.dealerWon && !gameState.playerWon && (
                     <Button
-                      title='Stay'
+                      title="Stay"
                       textColor={colors.green}
                       onClick={stay}
-                      marginR={24}
                     >
                       Stay
                     </Button>
@@ -692,18 +686,17 @@ export function BlackJack() {
 
               {isGameFinished() && (
                 <Button
-                  title='Next game'
+                  title="Next game"
                   marginL={gameState.canStay && 24}
                   onClick={nextGame}
                   textColor={colors.green}
                 >
-                  {cardPlayerImages.length < 1 ? 'Continue' : 'Next game'}
+                  {cardPlayerImages.length < 1 ? "Continue" : "Next game"}
                 </Button>
               )}
               <Button
-                type='newGame'
-                title='New game'
-                marginL={16}
+                type="newGame"
+                title="New game"
                 textColor={colors.white}
                 onClick={createNewGame}
                 bgColor={colors.red}
